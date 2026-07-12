@@ -1,10 +1,8 @@
 import {
   Refine,
-  GitHubBanner,
   WelcomePage,
   Authenticated,
 } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import { BrowserRouter, Route, Routes, Outlet } from "react-router";
@@ -35,16 +33,15 @@ import { Header } from "./components/refine-ui/layout/header";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
+import { LandingPage } from "./features/landing/pages/LandingPage";
 import "./App.css";
 import { dataProvider } from "./providers/data";
 
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ThemeProvider>
-          <DevtoolsProvider>
             <Refine
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
@@ -78,6 +75,7 @@ function App() {
               }}
             >
               <Routes>
+                <Route index element={<LandingPage />} />
                 <Route
                   element={
                     <Layout>
@@ -85,10 +83,6 @@ function App() {
                     </Layout>
                   }
                 >
-                  <Route
-                    index
-                    element={<NavigateToResource resource="blog_posts" />}
-                  />
                   <Route path="/blog-posts">
                     <Route index element={<BlogPostList />} />
                     <Route path="create" element={<BlogPostCreate />} />
@@ -110,8 +104,6 @@ function App() {
               <UnsavedChangesNotifier />
               <DocumentTitleHandler />
             </Refine>
-            <DevtoolsPanel />
-          </DevtoolsProvider>
         </ThemeProvider>
       </RefineKbarProvider>
     </BrowserRouter>

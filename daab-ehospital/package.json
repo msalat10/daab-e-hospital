@@ -40,6 +40,7 @@
     "@refinedev/react-table": "^6.0.0",
     "@refinedev/rest": "^2.1.0",
     "@refinedev/simple-rest": "^6.0.0",
+    "@refinedev/supabase": "^6.0.2",
     "@tailwindcss/vite": "^4.1.8",
     "@tanstack/react-table": "^8.2.6",
     "class-variance-authority": "^0.7.1",
