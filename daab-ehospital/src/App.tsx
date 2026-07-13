@@ -1,41 +1,22 @@
-import {
-  Refine,
-  WelcomePage,
-  Authenticated,
-} from "@refinedev/core";
+import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import { BrowserRouter, Route, Routes, Outlet } from "react-router";
 import routerProvider, {
-  NavigateToResource,
-  CatchAllNavigate,
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router";
-import {
-  BlogPostList,
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryList,
-  CategoryCreate,
-  CategoryEdit,
-  CategoryShow,
-} from "./pages/categories";
-import { Login } from "./pages/login";
-import { Register } from "./pages/register";
-import { ForgotPassword } from "./pages/forgot-password";
+import { hospitalResources } from "./app/resources";
 import { ErrorComponent } from "./components/refine-ui/layout/error-component";
 import { Layout } from "./components/refine-ui/layout/layout";
-import { Header } from "./components/refine-ui/layout/header";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
+import { DoctorsListPage } from "./features/doctor/pages/DoctorsListPage";
 import { LandingPage } from "./features/landing/pages/LandingPage";
+import { ResourcePlaceholderPage } from "./features/shared/pages/ResourcePlaceholderPage";
 import "./App.css";
-import { dataProvider } from "./providers/data";
+import { dataProvider, liveProvider } from "./providers/data";
 
 function App() {
   return (
@@ -46,28 +27,8 @@ function App() {
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               dataProvider={dataProvider}
-              resources={[
-                {
-                  name: "blog_posts",
-                  list: "/blog-posts",
-                  create: "/blog-posts/create",
-                  edit: "/blog-posts/edit/:id",
-                  show: "/blog-posts/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
-                {
-                  name: "categories",
-                  list: "/categories",
-                  create: "/categories/create",
-                  edit: "/categories/edit/:id",
-                  show: "/categories/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
-              ]}
+              liveProvider={liveProvider}
+              resources={hospitalResources}
               options={{
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
@@ -83,17 +44,172 @@ function App() {
                     </Layout>
                   }
                 >
-                  <Route path="/blog-posts">
-                    <Route index element={<BlogPostList />} />
-                    <Route path="create" element={<BlogPostCreate />} />
-                    <Route path="edit/:id" element={<BlogPostEdit />} />
-                    <Route path="show/:id" element={<BlogPostShow />} />
+                  <Route path="/patients">
+                    <Route
+                      index
+                      element={<ResourcePlaceholderPage resource="patients" />}
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="patients"
+                          mode="create"
+                        />
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="patients"
+                          mode="edit"
+                        />
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="patients"
+                          mode="show"
+                        />
+                      }
+                    />
                   </Route>
-                  <Route path="/categories">
-                    <Route index element={<CategoryList />} />
-                    <Route path="create" element={<CategoryCreate />} />
-                    <Route path="edit/:id" element={<CategoryEdit />} />
-                    <Route path="show/:id" element={<CategoryShow />} />
+                  <Route path="/appointments">
+                    <Route
+                      index
+                      element={
+                        <ResourcePlaceholderPage resource="appointments" />
+                      }
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="appointments"
+                          mode="create"
+                        />
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="appointments"
+                          mode="edit"
+                        />
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="appointments"
+                          mode="show"
+                        />
+                      }
+                    />
+                  </Route>
+                  <Route path="/clinics">
+                    <Route
+                      index
+                      element={<ResourcePlaceholderPage resource="clinics" />}
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="clinics"
+                          mode="create"
+                        />
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="clinics"
+                          mode="edit"
+                        />
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="clinics"
+                          mode="show"
+                        />
+                      }
+                    />
+                  </Route>
+                  <Route path="/services">
+                    <Route
+                      index
+                      element={<ResourcePlaceholderPage resource="services" />}
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="services"
+                          mode="create"
+                        />
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="services"
+                          mode="edit"
+                        />
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="services"
+                          mode="show"
+                        />
+                      }
+                    />
+                  </Route>
+                  <Route path="/doctors">
+                    <Route
+                      index
+                      element={<DoctorsListPage />}
+                    />
+                    <Route
+                      path="create"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="doctors"
+                          mode="create"
+                        />
+                      }
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="doctors"
+                          mode="edit"
+                        />
+                      }
+                    />
+                    <Route
+                      path="show/:id"
+                      element={
+                        <ResourcePlaceholderPage
+                          resource="doctors"
+                          mode="show"
+                        />
+                      }
+                    />
                   </Route>
                   <Route path="*" element={<ErrorComponent />} />
                 </Route>

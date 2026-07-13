@@ -1,5 +1,9 @@
-import { createSimpleRestDataProvider } from "@refinedev/rest/simple-rest";
-import { API_URL } from "./constants";
-export const { dataProvider, kyInstance } = createSimpleRestDataProvider({
-  apiURL: API_URL,
-});
+import {
+  dataProvider as refineSupabaseDataProvider,
+  liveProvider as refineSupabaseLiveProvider,
+} from "@refinedev/supabase";
+
+import { supabaseClient } from "./supabase";
+
+export const dataProvider = refineSupabaseDataProvider(supabaseClient);
+export const liveProvider = refineSupabaseLiveProvider(supabaseClient);
