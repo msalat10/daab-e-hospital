@@ -6,4 +6,11 @@ const supabaseUrl =
 const supabaseAnonKey =
   import.meta.env.VITE_SUPABASE_ANON_KEY ?? "placeholder-anon-key";
 
-export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+  db: {
+    schema: "public",
+  },
+  auth: {
+    persistSession: true,
+  },
+});

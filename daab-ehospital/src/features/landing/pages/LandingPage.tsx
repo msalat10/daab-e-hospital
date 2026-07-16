@@ -91,7 +91,7 @@ export const LandingPage = () => {
               variant="outline"
               className="h-10 rounded-[4px] border-white/45 bg-transparent px-6 text-sm text-white hover:bg-white hover:text-brand"
             >
-              <Link to="/doctor">Doctor Portal</Link>
+              <Link to="/doctor/dashboard">Doctor Portal</Link>
             </Button>
           </nav>
 

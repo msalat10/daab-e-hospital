@@ -2,6 +2,8 @@ export type CampName = "Hagadera" | "Ifo" | "Dhagahley";
 
 export type Gender = "female" | "male" | "other" | "prefer_not_to_say";
 
+export type UserRole = "patient" | "doctor" | "admin";
+
 export type AppointmentStatus =
   | "pending"
   | "confirmed"
@@ -32,6 +34,7 @@ export type Service = {
 
 export type Doctor = {
   id: string;
+  user_id?: string | null;
   full_name: string;
   title?: string | null;
   specialty?: string | null;
@@ -44,6 +47,7 @@ export type Doctor = {
 
 export type Patient = {
   id: string;
+  user_id?: string | null;
   full_name: string;
   refugee_id?: string | null;
   phone?: string | null;
@@ -67,6 +71,14 @@ export type Appointment = {
   reason?: string | null;
   status: AppointmentStatus;
   doctor_notes?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Profile = {
+  id: string;
+  full_name?: string | null;
+  role: UserRole;
   created_at: string;
   updated_at: string;
 };
