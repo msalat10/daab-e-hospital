@@ -51,23 +51,23 @@ export const DoctorsListPage = () => {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[8px] bg-brand-ink px-6 py-6 text-white shadow-brand-soft md:px-8">
+      <section className="rounded-[8px] border border-brand-border bg-brand-surface px-5 py-4 shadow-brand-card">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl space-y-2">
-            <Badge className="border-white/10 bg-white/10 text-white">
+            <Badge className="border-brand-border bg-brand-paper-soft text-brand-muted">
               Doctor portal
             </Badge>
-            <h1 className="text-3xl font-semibold tracking-normal md:text-4xl">
+            <h1 className="text-2xl font-semibold tracking-normal text-brand-ink">
               Doctors
             </h1>
-            <p className="text-sm leading-6 text-white/72">
+            <p className="text-sm leading-6 text-brand-muted">
               Live doctor profiles loaded from Supabase for clinic assignment
               and appointment planning.
             </p>
           </div>
           <Button
             variant="outline"
-            className="w-fit border-white/20 bg-white/5 text-white hover:bg-white/12 hover:text-white"
+            className="h-9 w-fit rounded-[6px] border-brand-border bg-brand-surface text-brand-ink hover:bg-brand-light hover:text-brand-ink"
             onClick={() => doctorsList.query.refetch()}
           >
             Refresh
@@ -113,7 +113,7 @@ export const DoctorsListPage = () => {
           )}
 
           {hasError && !isLoading && (
-            <div className="m-6 rounded-[8px] border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-800">
+            <div className="m-6 rounded-[8px] border border-brand-danger/20 bg-brand-danger-soft px-4 py-4 text-sm text-brand-danger">
               We could not load doctors from Supabase. Check the environment
               keys and the RLS select policy on the doctors table.
             </div>
@@ -148,7 +148,7 @@ export const DoctorsListPage = () => {
                     : undefined;
 
                   return (
-                    <TableRow key={doctor.id}>
+                    <TableRow key={doctor.id} className="hover:bg-brand-light">
                       <TableCell className="px-6">
                         <div>
                           <p className="font-medium text-brand-ink">
@@ -182,7 +182,7 @@ export const DoctorsListPage = () => {
                         <Badge
                           className={
                             doctor.is_active
-                              ? "border-brand/15 bg-brand-mint text-brand"
+                              ? "border-brand-success/20 bg-brand-success-soft text-brand-success"
                               : "border-brand-border bg-brand-paper text-brand-muted"
                           }
                           variant="outline"
@@ -215,7 +215,7 @@ const StatCard = ({ icon, label, value }: StatCardProps) => (
         <p className="text-sm text-brand-muted">{label}</p>
         <p className="mt-1 text-3xl font-semibold text-brand-ink">{value}</p>
       </div>
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-mint text-brand">
+      <div className="flex h-10 w-10 items-center justify-center rounded-[6px] bg-brand-light text-brand">
         {icon}
       </div>
     </CardContent>

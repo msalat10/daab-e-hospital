@@ -16,14 +16,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/refine-ui/data-table/data-table-pagination";
+import {
+  TableInstanceShell,
+  type TableShellSummary,
+  type TableShellTab,
+} from "@/components/refine-ui/data-table/table-instance-shell";
 import { cn } from "@/lib/utils";
 
 type DataTableProps<TData extends BaseRecord> = {
   table: UseTableReturnType<TData, HttpError>;
+  title?: string;
+  searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  tabs?: TableShellTab[];
+  activeTab?: string;
+  onTabChange?: (value: string) => void;
+  filterButtons?: string[];
+  rowInfo?: string;
+  summaries?: TableShellSummary[];
 };
 
 export function DataTable<TData extends BaseRecord>({
   table,
+  title,
+  searchPlaceholder,
+  searchValue,
+  onSearchChange,
+  tabs,
+  activeTab,
+  onTabChange,
+  filterButtons,
+  rowInfo,
+  summaries,
 }: DataTableProps<TData>) {
   const {
     reactTable: { getHeaderGroups, getRowModel, getAllColumns },
@@ -78,13 +103,44 @@ export function DataTable<TData extends BaseRecord>({
     };
   }, [tableQuery.data?.data, pageSize]);
 
+  const pagination =
+    !isLoading && getRowModel().rows?.length > 0 ? (
+      <DataTablePagination
+        currentPage={currentPage}
+        pageCount={pageCount}
+        setCurrentPage={setCurrentPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        total={tableQuery.data?.total}
+      />
+    ) : undefined;
+
   return (
-    <div className={cn("flex", "flex-col", "flex-1", "gap-4")}>
-      <div ref={tableContainerRef} className={cn("rounded-md", "border")}>
+    <TableInstanceShell
+      title={title}
+      searchPlaceholder={searchPlaceholder}
+      searchValue={searchValue}
+      onSearchChange={onSearchChange}
+      tabs={tabs}
+      activeTab={activeTab}
+      onTabChange={onTabChange}
+      filterButtons={filterButtons}
+      rowInfo={rowInfo}
+      summaries={summaries}
+      pagination={pagination}
+      className="flex flex-1 flex-col"
+    >
+      <div
+        ref={tableContainerRef}
+        className={cn("overflow-auto bg-brand-surface")}
+      >
         <Table ref={tableRef} style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHeader>
             {getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow
+                key={headerGroup.id}
+                className="border-brand-border bg-brand-paper-soft hover:bg-brand-paper-soft"
+              >
                 {headerGroup.headers.map((header) => {
                   const isPlaceholder = header.isPlaceholder;
 
@@ -97,6 +153,7 @@ export function DataTable<TData extends BaseRecord>({
                           isOverflowing: isOverflowing,
                         }),
                       }}
+                      className="h-9 px-3 text-xs font-semibold text-brand-muted"
                     >
                       {isPlaceholder ? null : (
                         <div className={cn("flex", "items-center", "gap-1")}>
@@ -130,7 +187,7 @@ export function DataTable<TData extends BaseRecord>({
                               isOverflowing: isOverflowing,
                             }),
                           }}
-                          className={cn("truncate")}
+                      className={cn("truncate px-3 py-3")}
                         >
                           <div className="h-8" />
                         </TableCell>
@@ -165,6 +222,10 @@ export function DataTable<TData extends BaseRecord>({
                   <TableRow
                     key={row.original?.id ?? row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={cn(
+                      "border-brand-divider bg-brand-surface transition-colors hover:bg-brand-light",
+                      "data-[state=selected]:bg-brand-light"
+                    )}
                   >
                     {row.getVisibleCells().map((cell) => {
                       return (
@@ -176,6 +237,7 @@ export function DataTable<TData extends BaseRecord>({
                               isOverflowing: isOverflowing,
                             }),
                           }}
+                          className="px-3 py-3 text-sm text-brand-ink"
                         >
                           <div className="truncate">
                             {flexRender(
@@ -198,17 +260,7 @@ export function DataTable<TData extends BaseRecord>({
           </TableBody>
         </Table>
       </div>
-      {!isLoading && getRowModel().rows?.length > 0 && (
-        <DataTablePagination
-          currentPage={currentPage}
-          pageCount={pageCount}
-          setCurrentPage={setCurrentPage}
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          total={tableQuery.data?.total}
-        />
-      )}
-    </div>
+    </TableInstanceShell>
   );
 }
 
@@ -235,8 +287,8 @@ function DataTableNoData({
             "items-center",
             "justify-center",
             "gap-2",
-            "bg-background"
-          )}
+                    "bg-brand-surface"
+                  )}
           style={{
             position: isOverflowing.horizontal ? "sticky" : "absolute",
             left: isOverflowing.horizontal ? "50%" : "50%",
@@ -246,10 +298,10 @@ function DataTableNoData({
             minWidth: "300px",
           }}
         >
-          <div className={cn("text-lg", "font-semibold", "text-foreground")}>
+          <div className={cn("text-sm", "font-semibold", "text-brand-ink")}>
             No data to display
           </div>
-          <div className={cn("text-sm", "text-muted-foreground")}>
+          <div className={cn("text-sm", "text-brand-muted")}>
             This table is empty for the time being.
           </div>
         </div>

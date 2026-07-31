@@ -17,18 +17,17 @@ export function Layout({ children }: PropsWithChildren) {
           <main
             className={cn(
               "@container/main",
-              "container",
-              "mx-auto",
               "relative",
               "w-full",
               "flex",
               "flex-col",
               "flex-1",
-              "px-2",
-              "pt-4",
-              "md:p-4",
-              "lg:px-6",
-              "lg:pt-6"
+              "bg-brand-paper",
+              "px-4",
+              "pb-4",
+              "pt-2",
+              "md:px-5",
+              "md:pb-5"
             )}
           >
             {children}

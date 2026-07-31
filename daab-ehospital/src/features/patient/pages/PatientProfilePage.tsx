@@ -34,6 +34,7 @@ import type {
   Patient,
 } from "@/features/shared/types/hospital";
 import { useCurrentPatient } from "../hooks/useCurrentPatient";
+import TestColors from "./testcolors";
 
 type PatientProfileFormValues = {
   full_name: string;

@@ -1,0 +1,11 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">daab logo option three</title>
+  <desc id="desc">Circular teal clinic mark with a cross, care path, and daab wordmark.</desc>
+  <rect width="720" height="720" rx="72" fill="#FFFFFF"/>
+  <g transform="translate(180 104)">
+    <circle cx="180" cy="180" r="166" fill="#DCEEEF"/>
+    <circle cx="180" cy="180" r="128" fill="#FFFFFF"/>
+    <path d="M154 82h52v72h72v52h-72v72h-52v-72H82v-52h72V82Z" fill="#2C727B"/>
+  </g>
+  <text x="360" y="624" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="94" font-weight="800" letter-spacing="-2" fill="#1B1F24">daab</text>
+</svg>

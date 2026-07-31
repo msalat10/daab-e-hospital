@@ -12,8 +12,10 @@ import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/refine-ui/theme/theme-toggle";
 import { UserAvatar } from "@/components/refine-ui/layout/user-avatar";
 import { useSidebar, SidebarTrigger } from "@/components/ui/sidebar";
-import { LogOutIcon } from "lucide-react";
+import { Bell, LogOutIcon, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 export const Header = () => {
   const { isMobile } = useSidebar();
@@ -25,23 +27,45 @@ function DesktopHeader() {
   return (
     <header
       className={cn(
-        "sticky",
-        "top-0",
         "flex",
-        "h-16",
         "shrink-0",
         "items-center",
-        "gap-4",
-        "border-b",
-        "border-border",
-        "bg-sidebar",
-        "pr-3",
-        "justify-end",
+        "gap-3",
+        "bg-brand-paper",
+        "px-5",
+        "pb-2",
+        "pt-5",
+        "justify-between",
         "z-40"
       )}
     >
-      <ThemeToggle />
-      <UserDropdown />
+      <div>
+        <h1 className="text-2xl font-semibold tracking-normal text-brand-ink">
+          Dashboard
+        </h1>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-10 w-10 rounded-[10px] border-brand-border bg-brand-surface text-brand-muted shadow-brand-soft hover:bg-brand-light hover:text-brand"
+          aria-label="Notifications"
+        >
+          <Bell className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-10 w-10 rounded-[10px] border-brand-border bg-brand-surface text-brand-muted shadow-brand-soft hover:bg-brand-light hover:text-brand"
+          aria-label="Search"
+        >
+          <Search className="h-4 w-4" />
+        </Button>
+        <ThemeToggle />
+        <UserDropdown />
+      </div>
     </header>
   );
 }
@@ -62,8 +86,8 @@ function MobileHeader() {
         "items-center",
         "gap-2",
         "border-b",
-        "border-border",
-        "bg-sidebar",
+        "border-brand-border/70",
+        "bg-brand-surface",
         "pr-3",
         "justify-between",
         "z-40"
@@ -118,7 +142,16 @@ function MobileHeader() {
 }
 
 const UserDropdown = () => {
-  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+  const navigate = useNavigate();
+  const { mutate: logout, isPending: isLoggingOut } = useLogout({
+    mutationOptions: {
+      onSuccess: (response) => {
+        if (response.success) {
+          navigate(response.redirectTo || "/login", { replace: true });
+        }
+      },
+    },
+  });
 
   const authProvider = useActiveAuthProvider();
 

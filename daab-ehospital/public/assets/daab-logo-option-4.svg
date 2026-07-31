@@ -1,0 +1,11 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">daab logo option four</title>
+  <desc id="desc">Circular teal healthcare mark with a medical cross and letter D at the center.</desc>
+  <rect width="720" height="720" rx="72" fill="#FFFFFF"/>
+  <g transform="translate(116 116)">
+    <circle cx="244" cy="244" r="220" fill="#DCEEEF"/>
+    <circle cx="244" cy="244" r="174" fill="#FFFFFF"/>
+    <path d="M211 94h66v117h117v66H277v117h-66V277H94v-66h117V94Z" fill="#2C727B"/>
+    <text x="244" y="275" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="118" font-weight="850" fill="#FFFFFF">D</text>
+  </g>
+</svg>

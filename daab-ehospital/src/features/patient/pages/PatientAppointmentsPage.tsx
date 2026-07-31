@@ -1,25 +1,27 @@
-import { useMemo } from "react";
-import { type HttpError, useList, useUpdate } from "@refinedev/core";
+import { useMemo, useState } from "react";
+import {
+  type CrudFilters,
+  type HttpError,
+  useList,
+  useUpdate,
+} from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Link } from "react-router";
 
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import type {
   Appointment,
+  AppointmentStatus,
   Clinic,
   Doctor,
   Service,
 } from "@/features/shared/types/hospital";
 import {
   canPatientCancel,
+  formatAppointmentStatus,
   formatDateTime,
 } from "@/features/shared/utils/appointments";
 import { AppointmentStatusBadge } from "../components/AppointmentStatusBadge";
@@ -27,6 +29,10 @@ import { useCurrentPatient } from "../hooks/useCurrentPatient";
 
 export const PatientAppointmentsPage = () => {
   const { patient, isLoading: patientLoading } = useCurrentPatient();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "all">(
+    "all"
+  );
 
   const clinicsList = useList<Clinic>({
     resource: "clinics",
@@ -62,6 +68,34 @@ export const PatientAppointmentsPage = () => {
     () => new Map(doctorsList.result.data.map((doctor) => [doctor.id, doctor])),
     [doctorsList.result.data]
   );
+
+  const appointmentFilters = useMemo<CrudFilters>(() => {
+    const filters: CrudFilters = [
+      {
+        field: "patient_id",
+        operator: "eq",
+        value: patient?.id ?? "__no_patient__",
+      },
+    ];
+
+    if (statusFilter !== "all") {
+      filters.push({
+        field: "status",
+        operator: "eq",
+        value: statusFilter,
+      });
+    }
+
+    if (searchQuery.trim()) {
+      filters.push({
+        field: "reference_code",
+        operator: "contains",
+        value: searchQuery.trim(),
+      });
+    }
+
+    return filters;
+  }, [patient?.id, searchQuery, statusFilter]);
 
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<Appointment>();
@@ -136,7 +170,7 @@ export const PatientAppointmentsPage = () => {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-8 rounded-full border-brand-border px-3 text-xs"
+                className="h-8 rounded-[8px] border-white/10 bg-transparent px-3 text-xs text-white hover:bg-white/10 hover:text-white"
               >
                 <Link to={`/patient/appointments/${appointment.id}`}>Open</Link>
               </Button>
@@ -144,7 +178,7 @@ export const PatientAppointmentsPage = () => {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-8 rounded-full border-red-200 px-3 text-xs text-red-700 hover:bg-red-50 hover:text-red-800"
+                className="h-8 rounded-[8px] border-brand-danger/30 bg-transparent px-3 text-xs text-brand-danger hover:bg-brand-danger-soft hover:text-brand-danger"
                 disabled={!canCancel || updateAppointment.mutation.isPending}
                 onClick={async () => {
                   await updateAppointment.mutateAsync({
@@ -176,13 +210,7 @@ export const PatientAppointmentsPage = () => {
       resource: "appointments",
       syncWithLocation: true,
       filters: {
-        permanent: [
-          {
-            field: "patient_id",
-            operator: "eq",
-            value: patient?.id ?? "__no_patient__",
-          },
-        ],
+        permanent: appointmentFilters,
       },
       sorters: {
         initial: [{ field: "requested_date", order: "desc" }],
@@ -195,7 +223,7 @@ export const PatientAppointmentsPage = () => {
 
   if (!patientLoading && !patient) {
     return (
-      <Card className="mx-auto max-w-3xl rounded-[18px] border-0 bg-white shadow-brand-card">
+      <Card className="mx-auto max-w-3xl rounded-[8px] border-brand-border bg-brand-surface shadow-brand-card">
         <CardContent className="p-6">
           <h1 className="text-2xl font-semibold text-brand-ink">
             Complete your profile first
@@ -217,7 +245,7 @@ export const PatientAppointmentsPage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] border-0 bg-white px-6 py-6 shadow-brand-card md:px-8">
+      <section className="mb-4 rounded-[8px] border border-brand-border bg-brand-surface px-5 py-4 shadow-brand-card">
         <p className="text-sm font-medium text-brand-muted">Patient portal</p>
         <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -238,23 +266,39 @@ export const PatientAppointmentsPage = () => {
         </div>
       </section>
 
-      <Card className="rounded-[18px] border-0 bg-white shadow-brand-card">
-        <CardHeader className="border-b border-brand-border/70">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <CardTitle className="text-xl text-brand-ink">
-                Appointment history
-              </CardTitle>
-              <p className="mt-1 text-sm text-brand-muted">
-                Only appointments linked to your patient profile are shown.
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          <DataTable table={table} />
-        </CardContent>
-      </Card>
+      <DataTable
+        table={table}
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search appointment references"
+        tabs={[
+          { value: "all", label: "All" },
+          { value: "pending", label: "Pending" },
+          { value: "confirmed", label: "Confirmed" },
+          { value: "completed", label: "Completed" },
+          { value: "cancelled", label: "Cancelled" },
+        ]}
+        activeTab={statusFilter}
+        onTabChange={(value) =>
+          setStatusFilter(value as AppointmentStatus | "all")
+        }
+        filterButtons={["Reference", "Status", "Date"]}
+        rowInfo={`${table.refineCore.tableQuery.data?.total ?? 0} rows`}
+        summaries={[
+          {
+            label: "Filtered",
+            value: `${table.refineCore.tableQuery.data?.total ?? 0} rows`,
+          },
+          {
+            label: "Sorted",
+            value:
+              statusFilter === "all"
+                ? "date desc"
+                : formatAppointmentStatus(statusFilter),
+          },
+          { label: "View", value: "patient history" },
+        ]}
+      />
     </div>
   );
 };

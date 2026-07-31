@@ -4,6 +4,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  type RowSelectionState,
   useReactTable,
 } from "@tanstack/react-table";
 import { Link } from "react-router";
@@ -14,12 +15,8 @@ import {
   isAppointmentInDoctorScope,
 } from "../utils/doctorAppointments";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -28,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TableInstanceShell } from "@/components/refine-ui/data-table/table-instance-shell";
 import type {
   Appointment,
   AppointmentStatus,
@@ -46,6 +44,8 @@ export const DoctorAppointmentsPage = () => {
   const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "all">(
     "all"
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const appointmentsList = useList<Appointment>({
     resource: "appointments",
@@ -92,27 +92,75 @@ export const DoctorAppointmentsPage = () => {
       ),
     [appointmentsList.result.data, doctor]
   );
-  const filteredAppointments = useMemo(
-    () =>
-      statusFilter === "all"
-        ? scopedAppointments
-        : scopedAppointments.filter(
-            (appointment) => appointment.status === statusFilter
-          ),
-    [scopedAppointments, statusFilter]
-  );
+  const filteredAppointments = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return scopedAppointments.filter((appointment) => {
+      const patient = patientsById.get(appointment.patient_id);
+      const clinic = clinicsById.get(appointment.clinic_id);
+      const service = appointment.service_id
+        ? servicesById.get(appointment.service_id)
+        : undefined;
+      const matchesStatus =
+        statusFilter === "all" || appointment.status === statusFilter;
+      const searchableText = [
+        appointment.reference_code,
+        patient?.full_name,
+        patient?.refugee_id,
+        clinic?.name,
+        clinic?.camp,
+        service?.name,
+        appointment.status,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return matchesStatus && searchableText.includes(normalizedQuery);
+    });
+  }, [
+    clinicsById,
+    patientsById,
+    scopedAppointments,
+    searchQuery,
+    servicesById,
+    statusFilter,
+  ]);
 
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<Appointment>();
 
     return [
+      columnHelper.display({
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all appointments"
+            className="border-brand-border data-[state=checked]:border-brand data-[state=checked]:bg-brand"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select appointment"
+            className="border-brand-border data-[state=checked]:border-brand data-[state=checked]:bg-brand"
+          />
+        ),
+        size: 54,
+      }),
       columnHelper.accessor("reference_code", {
         header: "Reference",
         cell: ({ row }) => {
           const patient = patientsById.get(row.original.patient_id);
           return (
             <div>
-              <p className="font-medium text-brand-ink">
+              <p className="font-semibold text-brand-ink">
                 {row.original.reference_code}
               </p>
               <p className="mt-1 text-xs text-brand-muted">
@@ -126,7 +174,7 @@ export const DoctorAppointmentsPage = () => {
         header: "Patient",
         cell: ({ getValue }) => {
           const patient = patientsById.get(getValue());
-          return patient?.full_name || "Patient";
+          return <span className="font-semibold text-brand-ink">{patient?.full_name || "Patient"}</span>;
         },
       }),
       columnHelper.accessor("clinic_id", {
@@ -139,7 +187,7 @@ export const DoctorAppointmentsPage = () => {
 
           return (
             <div>
-              <p className="font-medium text-brand-ink">
+              <p className="font-semibold text-brand-ink">
                 {clinic ? `${clinic.name}, ${clinic.camp}` : "Clinic"}
               </p>
               <p className="mt-1 text-xs text-brand-muted">
@@ -151,8 +199,14 @@ export const DoctorAppointmentsPage = () => {
       }),
       columnHelper.accessor("requested_date", {
         header: "Visit time",
-        cell: ({ row }) =>
-          formatDateTime(row.original.requested_date, row.original.requested_time),
+        cell: ({ row }) => (
+          <span className="font-medium text-brand-muted">
+            {formatDateTime(
+              row.original.requested_date,
+              row.original.requested_time
+            )}
+          </span>
+        ),
       }),
       columnHelper.accessor("status", {
         header: "Status",
@@ -171,13 +225,13 @@ export const DoctorAppointmentsPage = () => {
                 asChild
                 size="sm"
                 variant="outline"
-                className="h-8 rounded-full border-brand-border px-3 text-xs"
+                className="h-8 rounded-[6px] border-brand-border bg-brand-surface px-3 text-xs text-brand-ink hover:bg-brand-light hover:text-brand-ink"
               >
                 <Link to={`/doctor/appointments/${appointment.id}`}>Open</Link>
               </Button>
               <Button
                 size="sm"
-                className="h-8 rounded-full bg-brand px-3 text-xs hover:bg-brand-dark"
+                className="h-8 rounded-[8px] bg-primary px-3 text-xs hover:bg-primary/90"
                 disabled={!canConfirm || updateAppointment.mutation.isPending}
                 onClick={async () => {
                   if (!doctor) {
@@ -219,12 +273,18 @@ export const DoctorAppointmentsPage = () => {
   const table = useReactTable({
     data: filteredAppointments,
     columns,
+    state: {
+      rowSelection,
+    },
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
   });
+  const selectedRows = table.getSelectedRowModel().rows.length;
 
   if (!doctorLoading && !doctor) {
     return (
-      <Card className="mx-auto max-w-3xl rounded-[18px] border-0 bg-white shadow-brand-card">
+      <Card className="mx-auto max-w-3xl rounded-[8px] border-brand-border bg-brand-surface shadow-brand-card">
         <CardContent className="p-6">
           <h1 className="text-2xl font-semibold text-brand-ink">
             Choose your doctor profile
@@ -242,7 +302,7 @@ export const DoctorAppointmentsPage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] bg-white px-6 py-6 shadow-brand-card md:px-8">
+      <section className="mb-4 rounded-[8px] border border-brand-border bg-brand-surface px-5 py-4 shadow-brand-card">
         <p className="text-sm font-medium text-brand-muted">Doctor portal</p>
         <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -260,41 +320,42 @@ export const DoctorAppointmentsPage = () => {
         </div>
       </section>
 
-      <Card className="rounded-[18px] border-0 bg-white shadow-brand-card">
-        <CardHeader className="border-b border-brand-border/70">
-          <CardTitle className="text-xl text-brand-ink">
-            Queue records
-          </CardTitle>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {doctorStatusTabs.map((status) => (
-              <Button
-                key={status}
-                type="button"
-                size="sm"
-                variant={statusFilter === status ? "default" : "outline"}
-                className={
-                  statusFilter === status
-                    ? "rounded-full bg-brand px-4 hover:bg-brand-dark"
-                    : "rounded-full border-brand-border px-4"
-                }
-                onClick={() => setStatusFilter(status)}
-              >
-                {status === "all" ? "All" : formatAppointmentStatus(status)}
-              </Button>
-            ))}
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
+      <TableInstanceShell
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search patients, references, clinics"
+        tabs={doctorStatusTabs.map((status) => ({
+          value: status,
+          label: status === "all" ? "All" : formatAppointmentStatus(status),
+        }))}
+        activeTab={statusFilter}
+        onTabChange={(value) => setStatusFilter(value as AppointmentStatus | "all")}
+        filterButtons={["Patient", "Clinic", "Status"]}
+        rowInfo={`${filteredAppointments.length} rows / ${selectedRows} selected`}
+        summaries={[
+          { label: "Filtered", value: `${filteredAppointments.length} rows` },
+          {
+            label: "Sorted",
+            value:
+              statusFilter === "all"
+                ? "date asc"
+                : formatAppointmentStatus(statusFilter),
+          },
+          { label: "Selected", value: `${selectedRows} rows` },
+        ]}
+      >
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
                     key={headerGroup.id}
-                    className="bg-brand-paper-soft hover:bg-brand-paper-soft"
+                    className="border-brand-border bg-brand-paper-soft hover:bg-brand-paper-soft"
                   >
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id} className="px-5 text-brand-muted">
+                      <TableHead
+                        key={header.id}
+                        className="h-9 px-3 text-xs font-semibold text-brand-muted"
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -311,16 +372,19 @@ export const DoctorAppointmentsPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-40 text-center text-brand-muted"
+                      className="h-40 bg-brand-surface text-center text-brand-muted"
                     >
                       Loading appointment queue...
                     </TableCell>
                   </TableRow>
                 ) : table.getRowModel().rows.length ? (
                   table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id}>
+                    <TableRow
+                      key={row.id}
+                      className="border-brand-divider bg-brand-surface transition hover:bg-brand-light"
+                    >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-5 py-4">
+                        <TableCell key={cell.id} className="px-3 py-3 text-sm text-brand-ink">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -333,7 +397,7 @@ export const DoctorAppointmentsPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-40 text-center text-brand-muted"
+                      className="h-40 bg-brand-surface text-center text-brand-muted"
                     >
                       No appointments match this queue view.
                     </TableCell>
@@ -341,9 +405,7 @@ export const DoctorAppointmentsPage = () => {
                 )}
               </TableBody>
             </Table>
-          </div>
-        </CardContent>
-      </Card>
+      </TableInstanceShell>
     </div>
   );
 };

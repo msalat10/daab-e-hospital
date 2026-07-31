@@ -418,7 +418,7 @@ export const DoctorAppointmentDetailsPage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full rounded-full border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
+                className="w-full rounded-full border-brand-danger/20 text-brand-danger hover:bg-brand-danger-soft hover:text-brand-danger"
                 onClick={() =>
                   saveAppointment(
                     {

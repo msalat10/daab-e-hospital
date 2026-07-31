@@ -1,5 +1,5 @@
 import { useState, type ComponentProps, type FormEvent } from "react"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { useLogin } from "@refinedev/core"
 
 import { cn } from "@/lib/utils"
@@ -19,6 +19,7 @@ export function LoginForm({
   className,
   ...props
 }: ComponentProps<"div">) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -28,7 +29,10 @@ export function LoginForm({
       onSuccess: (response) => {
         if (!response.success) {
           setError(response.error?.message || "Unable to sign in")
+          return
         }
+
+        navigate(response.redirectTo || "/app", { replace: true })
       },
       onError: (loginError) => {
         setError(loginError.message || "Unable to sign in")
@@ -49,6 +53,11 @@ export function LoginForm({
           <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
+                <img
+                  src="/assets/daab-logo-mark.svg"
+                  alt="daab"
+                  className="mb-2 h-20 w-28 object-contain"
+                />
                 <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-balance text-muted-foreground">
                   Sign in to access the Dadaab E-Hospital system
@@ -130,13 +139,7 @@ export function LoginForm({
               </FieldDescription>
             </FieldGroup>
           </form>
-          <div className="relative hidden bg-muted md:block">
-            <img
-              src="/assets/hero-care-team.png"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-            />
-          </div>
+          <div className="hidden bg-primary-soft md:block" />
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">

@@ -1,0 +1,11 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">daab logo option two</title>
+  <desc id="desc">Rounded teal shield mark with medical cross and daab wordmark.</desc>
+  <rect width="720" height="720" rx="72" fill="#FFFFFF"/>
+  <g transform="translate(206 92)">
+    <path d="M154 0c70 0 132 23 154 36v148c0 98-63 177-154 216C63 361 0 282 0 184V36C22 23 84 0 154 0Z" fill="#DCEEEF"/>
+    <path d="M154 34c52 0 97 15 116 25v122c0 76-46 136-116 169-70-33-116-93-116-169V59c19-10 64-25 116-25Z" fill="#2C727B"/>
+    <path d="M129 95h50v62h62v50h-62v62h-50v-62H67v-50h62V95Z" fill="#FFFFFF"/>
+  </g>
+  <text x="360" y="624" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="94" font-weight="800" letter-spacing="-2" fill="#2C727B">daab</text>
+</svg>

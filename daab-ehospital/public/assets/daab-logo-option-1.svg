@@ -1,0 +1,11 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">daab logo option one</title>
+  <desc id="desc">Minimal teal medical cross with a care leaf and daab wordmark.</desc>
+  <rect width="720" height="720" rx="72" fill="#FFFFFF"/>
+  <g transform="translate(210 118)">
+    <path d="M114 0h92v98h98v92h-98v98h-92v-98H16V98h98V0Z" fill="#2C727B"/>
+    <path d="M152 292c32-83 101-130 171-188-21 91-78 158-171 188Z" fill="#DCEEEF"/>
+    <path d="M108 317c47-78 120-113 197-155" stroke="#245F67" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  <text x="360" y="624" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="94" font-weight="800" letter-spacing="-2" fill="#1B1F24">daab</text>
+</svg>

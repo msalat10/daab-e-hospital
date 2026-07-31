@@ -35,7 +35,7 @@ export function Sidebar() {
   const { menuItems, selectedKey } = useMenu();
 
   return (
-    <ShadcnSidebar collapsible="icon" className={cn("border-none")}>
+    <ShadcnSidebar collapsible="icon" className={cn("border-none bg-brand-surface")}>
       <ShadcnSidebarRail />
       <SidebarHeader />
       <ShadcnSidebarContent
@@ -48,7 +48,8 @@ export function Sidebar() {
           "pt-2",
           "pb-2",
           "border-r",
-          "border-border",
+          "border-brand-border/70",
+          "bg-brand-surface",
           {
             "px-3": open,
             "px-1": !open,
@@ -210,16 +211,14 @@ function SidebarItemLink({ item, selectedKey }: MenuItemProps) {
 }
 
 function SidebarHeader() {
-  const { title } = useRefineOptions();
   const { open, isMobile } = useShadcnSidebar();
 
   return (
     <ShadcnSidebarHeader
       className={cn(
         "p-0",
-        "h-16",
-        "border-b",
-        "border-border",
+        "h-[72px]",
+        "bg-brand-surface",
         "flex-row",
         "items-center",
         "justify-between",
@@ -243,21 +242,17 @@ function SidebarHeader() {
           }
         )}
       >
-        <div>{title.icon}</div>
-        <h2
+        <img
+          src="/assets/daab-logo-mark.svg"
+          alt="daab"
           className={cn(
-            "text-sm",
-            "font-bold",
-            "transition-opacity",
-            "duration-200",
+            "h-12 shrink-0 object-contain transition-all duration-200",
             {
-              "opacity-0": !open,
-              "opacity-100": open,
+              "w-12": !open,
+              "w-24": open,
             }
           )}
-        >
-          {title.text}
-        </h2>
+        />
       </div>
 
       <ShadcnSidebarTrigger
@@ -286,7 +281,7 @@ function ItemIcon({ icon, isSelected }: IconProps) {
     <div
       className={cn("w-4", {
         "text-muted-foreground": !isSelected,
-        "text-sidebar-primary-foreground": isSelected,
+        "text-brand": isSelected,
       })}
     >
       {icon ?? <ListIcon />}
@@ -324,7 +319,7 @@ function SidebarButton({
           truncate: !rightIcon,
           "font-normal": !isSelected,
           "font-semibold": isSelected,
-          "text-sidebar-primary-foreground": isSelected,
+          "text-brand-ink": isSelected,
           "text-foreground": !isSelected,
         })}
       >
@@ -340,12 +335,11 @@ function SidebarButton({
       variant="ghost"
       size="lg"
       className={cn(
-        "flex w-full items-center justify-start gap-2 py-2 !px-3 text-sm",
+        "flex h-9 w-full items-center justify-start gap-2 rounded-[6px] py-2 !px-3 text-sm",
         {
-          "bg-sidebar-primary": isSelected,
-          "hover:!bg-sidebar-primary/90": isSelected,
-          "text-sidebar-primary-foreground": isSelected,
-          "hover:text-sidebar-primary-foreground": isSelected,
+          "bg-brand-mint text-brand-ink": isSelected,
+          "hover:!bg-brand-mint": isSelected,
+          "hover:bg-brand-paper-soft": !isSelected,
         },
         className
       )}

@@ -1,0 +1,15 @@
+<svg width="720" height="720" viewBox="0 0 720 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">daab logo</title>
+  <desc id="desc">A teal healthcare cross, leaf, and stethoscope mark with daab text.</desc>
+  <rect width="720" height="720" fill="#FFFFFF"/>
+  <g transform="translate(178 94)">
+    <path d="M139 0h99v91h91v99h-91v91h-99v-91H48V91h91V0Z" fill="#2C727B"/>
+    <path d="M238 0h99v91h91v99h-91v91h-99v-91h-91V91h91V0Z" fill="#245F67"/>
+    <path d="M199 282c23-54 69-91 115-127 49-39 88-82 102-155H319c-8 47-37 82-78 113-56 43-106 83-127 169h85Z" fill="#DCEEEF"/>
+    <path d="M133 286c64-101 188-113 259-248-18 114-104 167-184 228-29 22-54 45-75 70v-50Z" fill="#2C727B"/>
+    <path d="M133 336c28-43 72-70 118-94 68-36 131-74 178-152-21 97-96 148-175 195-75 44-119 92-104 158 15 66 82 102 164 98 54-3 103-21 142-54" stroke="#245F67" stroke-width="18" stroke-linecap="round"/>
+    <path d="M463 482l34-24" stroke="#245F67" stroke-width="18" stroke-linecap="square"/>
+    <circle cx="533" cy="431" r="32" stroke="#245F67" stroke-width="18"/>
+  </g>
+  <text x="360" y="650" text-anchor="middle" font-family="Inter, Arial, Helvetica, sans-serif" font-size="92" font-weight="800" letter-spacing="-2" fill="#2C727B">daab</text>
+</svg>

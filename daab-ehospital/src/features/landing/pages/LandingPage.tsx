@@ -70,8 +70,12 @@ export const LandingPage = () => {
 
         <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8">
           <nav className="flex items-center justify-between py-7">
-            <Link to="/" className="text-lg font-bold tracking-normal">
-              Dadaab E-Hospital.
+            <Link
+              to="/"
+              className="font-sans text-3xl font-extrabold leading-none text-white"
+              aria-label="daab home"
+            >
+              daab
             </Link>
 
             <div className="hidden items-center gap-10 text-sm text-white/80 md:flex">
@@ -91,7 +95,7 @@ export const LandingPage = () => {
               variant="outline"
               className="h-10 rounded-[4px] border-white/45 bg-transparent px-6 text-sm text-white hover:bg-white hover:text-brand"
             >
-              <Link to="/doctor/dashboard">Doctor Portal</Link>
+              <Link to="/login">Login</Link>
             </Button>
           </nav>
 

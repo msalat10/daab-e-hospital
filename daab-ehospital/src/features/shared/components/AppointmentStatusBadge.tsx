@@ -3,11 +3,11 @@ import type { AppointmentStatus } from "@/features/shared/types/hospital";
 import { formatAppointmentStatus } from "@/features/shared/utils/appointments";
 
 const statusClassName: Record<AppointmentStatus, string> = {
-  pending: "border-amber-200 bg-amber-50 text-amber-700",
-  confirmed: "border-brand/15 bg-brand-mint text-brand",
-  completed: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  missed: "border-slate-200 bg-slate-50 text-slate-700",
-  cancelled: "border-red-200 bg-red-50 text-red-700",
+  pending: "border-brand-warning/20 bg-brand-warning-soft text-brand-warning",
+  confirmed: "border-brand-success/20 bg-brand-success-soft text-brand-success",
+  completed: "border-brand-success/20 bg-brand-success-soft text-brand-success",
+  missed: "border-brand-neutral/20 bg-brand-neutral-soft text-brand-neutral",
+  cancelled: "border-brand-danger/20 bg-brand-danger-soft text-brand-danger",
 };
 
 export const AppointmentStatusBadge = ({

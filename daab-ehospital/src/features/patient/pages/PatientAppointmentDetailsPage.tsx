@@ -337,7 +337,7 @@ export const PatientAppointmentDetailsPage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="mt-4 w-full rounded-full border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
+                className="mt-4 w-full rounded-full border-brand-danger/20 text-brand-danger hover:bg-brand-danger-soft hover:text-brand-danger"
                 disabled={
                   !canPatientCancel(appointment.status) ||
                   updateAppointment.mutation.isPending
