@@ -246,6 +246,83 @@
   --sidebar-ring: var(--ring);
 }
 
+.portal-theme-patient {
+  --primary: #2c727b;
+  --primary-hover: #245f67;
+  --primary-soft: #dceeef;
+  --primary-soft-foreground: #245f67;
+  --ring: #2c727b;
+
+  --brand-teal: var(--primary);
+  --brand-teal-rgb: 44 114 123;
+  --brand-teal-dark: var(--primary-hover);
+  --brand-teal-light: var(--primary-soft);
+  --brand-paper: #f7f9fa;
+  --brand-paper-soft: #fafbfc;
+  --brand-mint: var(--primary-soft);
+  --brand-image: var(--muted);
+  --chart-1: var(--primary);
+  --chart-2: var(--primary-soft);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--primary-soft);
+  --sidebar-accent-foreground: var(--primary-soft-foreground);
+  --sidebar-ring: var(--ring);
+}
+
+.portal-theme-doctor {
+  --primary: #315f7d;
+  --primary-hover: #264b63;
+  --primary-soft: #e6f0f6;
+  --primary-soft-foreground: #264b63;
+  --ring: #315f7d;
+  --info: #2f6fa3;
+  --info-soft: #eaf3fb;
+
+  --brand-teal: var(--primary);
+  --brand-teal-rgb: 49 95 125;
+  --brand-teal-dark: var(--primary-hover);
+  --brand-teal-light: var(--primary-soft);
+  --brand-paper: #f6f8fb;
+  --brand-paper-soft: #fafbfd;
+  --brand-mint: var(--primary-soft);
+  --brand-info: var(--info);
+  --brand-info-soft: var(--info-soft);
+  --brand-image: #eef3f7;
+  --chart-1: var(--primary);
+  --chart-2: var(--primary-soft);
+  --chart-3: #718190;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--primary-soft);
+  --sidebar-accent-foreground: var(--primary-soft-foreground);
+  --sidebar-ring: var(--ring);
+}
+
+.portal-theme-admin {
+  --primary: #46505a;
+  --primary-hover: #333b43;
+  --primary-soft: #edf0f2;
+  --primary-soft-foreground: #333b43;
+  --ring: #46505a;
+
+  --brand-teal: var(--primary);
+  --brand-teal-rgb: 70 80 90;
+  --brand-teal-dark: var(--primary-hover);
+  --brand-teal-light: var(--primary-soft);
+  --brand-paper: #f7f8f9;
+  --brand-paper-soft: #fbfbfc;
+  --brand-mint: var(--primary-soft);
+  --brand-image: #eef0f2;
+  --chart-1: var(--primary);
+  --chart-2: var(--primary-soft);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--primary-soft);
+  --sidebar-accent-foreground: var(--primary-soft-foreground);
+  --sidebar-ring: var(--ring);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50 antialiased;
