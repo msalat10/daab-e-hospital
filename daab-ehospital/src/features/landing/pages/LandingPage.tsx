@@ -249,8 +249,7 @@ const ServiceCard = ({
 }: ServiceCardProps) => (
   <Card
     className={cn(
-      "relative min-h-[235px] overflow-hidden rounded-[8px_22px_8px_8px] border-0 shadow-brand-card after:absolute after:bottom-[-42px] after:right-[-42px] after:h-28 after:w-28 after:rounded-tl-full after:bg-brand-paper after:content-['']",
-      highlighted ? "bg-brand text-white" : "bg-white text-brand-ink"
+      "relative min-h-[235px] overflow-hidden rounded-[8px_22px_8px_8px] border border-brand-info/15 bg-brand-info-soft text-brand-ink shadow-brand-card after:absolute after:bottom-[-42px] after:right-[-42px] after:h-28 after:w-28 after:rounded-tl-full after:bg-white/55 after:content-['']"
     )}
   >
     <CardContent className="relative z-10 flex h-full flex-col justify-between p-5 sm:p-6">
@@ -258,7 +257,7 @@ const ServiceCard = ({
         <span
           className={cn(
             "flex h-11 w-11 items-center justify-center rounded-full",
-            highlighted ? "bg-white text-brand" : "bg-brand-mint text-brand"
+            highlighted ? "bg-brand text-white" : "bg-brand-surface text-brand"
           )}
         >
           <Icon className="h-5 w-5" />
@@ -270,7 +269,7 @@ const ServiceCard = ({
         <p
           className={cn(
             "mt-4 text-sm leading-6",
-            highlighted ? "text-white/78" : "text-brand-muted"
+            "text-brand-muted"
           )}
         >
           {description}
