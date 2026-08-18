@@ -35,7 +35,7 @@ export function Sidebar() {
   const { menuItems, selectedKey } = useMenu();
 
   return (
-    <ShadcnSidebar collapsible="icon" className={cn("border-none bg-brand-surface")}>
+    <ShadcnSidebar collapsible="icon" className={cn("border-none bg-brand text-white")}>
       <ShadcnSidebarRail />
       <SidebarHeader />
       <ShadcnSidebarContent
@@ -48,8 +48,8 @@ export function Sidebar() {
           "pt-2",
           "pb-2",
           "border-r",
-          "border-brand-border/70",
-          "bg-brand-surface",
+          "border-white/15",
+          "bg-brand",
           {
             "px-3": open,
             "px-1": !open,
@@ -95,7 +95,7 @@ function SidebarItemGroup({ item, selectedKey }: MenuItemProps) {
   const { open } = useShadcnSidebar();
 
   return (
-    <div className={cn("border-t", "border-sidebar-border", "pt-4")}>
+    <div className={cn("border-t", "border-white/15", "pt-4")}>
       <span
         className={cn(
           "ml-3",
@@ -103,7 +103,7 @@ function SidebarItemGroup({ item, selectedKey }: MenuItemProps) {
           "text-xs",
           "font-semibold",
           "uppercase",
-          "text-muted-foreground",
+          "text-white/60",
           "transition-all",
           "duration-200",
           {
@@ -142,7 +142,7 @@ function SidebarItemCollapsible({ item, selectedKey }: MenuItemProps) {
         "h-4",
         "w-4",
         "shrink-0",
-        "text-muted-foreground",
+        "text-white/70",
         "transition-transform",
         "duration-200",
         "group-data-[state=open]:rotate-90"
@@ -187,7 +187,7 @@ function SidebarItemDropdown({ item, selectedKey }: MenuItemProps) {
               <Link
                 to={child.route || ""}
                 className={cn("flex w-full items-center gap-2", {
-                  "bg-accent text-accent-foreground": isSelected,
+                  "bg-brand text-white": isSelected,
                 })}
               >
                 <ItemIcon
@@ -218,7 +218,7 @@ function SidebarHeader() {
       className={cn(
         "p-0",
         "h-[72px]",
-        "bg-brand-surface",
+        "bg-brand",
         "flex-row",
         "items-center",
         "justify-between",
@@ -244,19 +244,25 @@ function SidebarHeader() {
       >
         <img
           src="/assets/daab-logo-mark.svg"
-          alt="daab"
+          alt="Daryeel"
+          className="h-10 w-10 shrink-0 rounded-[10px] bg-white p-1 object-contain transition-all duration-200"
+        />
+        <span
           className={cn(
-            "h-12 shrink-0 object-contain transition-all duration-200",
+            "text-lg font-semibold tracking-normal text-white transition-opacity duration-200",
             {
-              "w-12": !open,
-              "w-24": open,
+              "opacity-0": !open,
+              "opacity-100": open,
+              "pointer-events-none": !open,
             }
           )}
-        />
+        >
+          Daryeel
+        </span>
       </div>
 
       <ShadcnSidebarTrigger
-        className={cn("text-muted-foreground", "mr-1.5", {
+        className={cn("mr-1.5 text-white/80 hover:bg-white/10 hover:text-white", {
           "opacity-0": !open,
           "opacity-100": open || isMobile,
           "pointer-events-auto": open || isMobile,
@@ -280,7 +286,7 @@ function ItemIcon({ icon, isSelected }: IconProps) {
   return (
     <div
       className={cn("w-4", {
-        "text-muted-foreground": !isSelected,
+        "text-white/75": !isSelected,
         "text-brand": isSelected,
       })}
     >
@@ -319,8 +325,8 @@ function SidebarButton({
           truncate: !rightIcon,
           "font-normal": !isSelected,
           "font-semibold": isSelected,
-          "text-brand-ink": isSelected,
-          "text-foreground": !isSelected,
+          "text-brand": isSelected,
+          "text-white/90": !isSelected,
         })}
       >
         {getDisplayName(item)}
@@ -337,9 +343,9 @@ function SidebarButton({
       className={cn(
         "flex h-9 w-full items-center justify-start gap-2 rounded-[6px] py-2 !px-3 text-sm",
         {
-          "bg-brand-mint text-brand-ink": isSelected,
-          "hover:!bg-brand-mint": isSelected,
-          "hover:bg-brand-paper-soft": !isSelected,
+          "bg-white text-brand shadow-brand-soft": isSelected,
+          "hover:!bg-white hover:text-brand": isSelected,
+          "text-white/90 hover:bg-white/10 hover:text-white": !isSelected,
         },
         className
       )}

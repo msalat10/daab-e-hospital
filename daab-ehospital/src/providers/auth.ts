@@ -16,6 +16,14 @@ type AuthParams = {
   role?: UserRole;
 };
 
+type ForgotPasswordParams = {
+  email: string;
+};
+
+type UpdatePasswordParams = {
+  password: string;
+};
+
 const getProfile = async (userId: string) => {
   const { data, error } = await supabaseClient
     .from("profiles")
@@ -172,6 +180,59 @@ export const authProvider: AuthProvider = {
         name: "Register failed",
       },
     };
+  },
+  forgotPassword: async ({ email }: ForgotPasswordParams) => {
+    try {
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+
+      if (error) {
+        return {
+          success: false,
+          error,
+        };
+      }
+
+      return {
+        success: true,
+        successNotification: {
+          message: "Reset email sent",
+          description: "Check your inbox for the password reset link.",
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error as Error,
+      };
+    }
+  },
+  updatePassword: async ({ password }: UpdatePasswordParams) => {
+    try {
+      const { error } = await supabaseClient.auth.updateUser({ password });
+
+      if (error) {
+        return {
+          success: false,
+          error,
+        };
+      }
+
+      return {
+        success: true,
+        redirectTo: "/login",
+        successNotification: {
+          message: "Password updated",
+          description: "You can now sign in with your new password.",
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error as Error,
+      };
+    }
   },
   logout: async () => {
     const { error } = await supabaseClient.auth.signOut();

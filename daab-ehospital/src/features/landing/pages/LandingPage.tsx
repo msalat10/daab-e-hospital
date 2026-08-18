@@ -3,8 +3,6 @@ import {
   ArrowRight,
   CalendarCheck,
   Clock3,
-  Heart,
-  Plus,
   Stethoscope,
   UsersRound,
 } from "lucide-react";
@@ -33,30 +31,30 @@ const services = [
   },
 ];
 
-const doctors = [
+const posts = [
   {
-    name: "Dr. Amina Hassan",
-    role: "General clinic visit",
-    camp: "Hagadera Clinic",
-    time: "09:30 AM",
+    name: "Hagadera Main Hospital",
+    role: "Main outpatient and referral post",
+    location: "Hagadera Camp",
+    availability: "Open for appointment requests",
   },
   {
-    name: "Dr. Yusuf Ali",
-    role: "Child health service",
-    camp: "Ifo Health Post",
-    time: "11:00 AM",
+    name: "Health Post E6",
+    role: "Community health post",
+    location: "Hagadera Camp",
+    availability: "Open for appointment requests",
   },
   {
-    name: "Dr. Halima Noor",
-    role: "Maternal care service",
-    camp: "Dhagahley Clinic",
-    time: "02:15 PM",
+    name: "Health Post L6",
+    role: "Community health post",
+    location: "Hagadera Camp",
+    availability: "Open for appointment requests",
   },
 ];
 
 const steps = [
   "Enter your patient details",
-  "Choose your camp clinic and service",
+  "Choose the nearest health post",
   "Get your visit time before you arrive",
 ];
 
@@ -73,9 +71,9 @@ export const LandingPage = () => {
             <Link
               to="/"
               className="font-sans text-3xl font-extrabold leading-none text-white"
-              aria-label="daab home"
+              aria-label="Daryeel home"
             >
-              daab
+              Daryeel
             </Link>
 
             <div className="hidden items-center gap-10 text-sm text-white/80 md:flex">
@@ -171,13 +169,13 @@ export const LandingPage = () => {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold tracking-normal">
-              Find the right clinic service
+              Find the right post
             </h2>
           </div>
 
           <div className="grid gap-5 md:grid-cols-3">
-            {doctors.map((doctor) => (
-              <DoctorCard key={doctor.name} {...doctor} />
+            {posts.map((post) => (
+              <PostCard key={post.name} {...post} />
             ))}
           </div>
 
@@ -278,43 +276,29 @@ const ServiceCard = ({
           {description}
         </p>
       </div>
-
-      <div className="mt-6 flex items-end justify-between">
-        <div className="flex gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-white">
-            <Heart className="h-4 w-4" />
-          </span>
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-black text-white">
-            <Plus className="h-4 w-4" />
-          </span>
-        </div>
-        <span className="relative z-10 inline-flex h-[72px] w-8 items-center justify-center rounded-full bg-brand-black text-white">
-          <ArrowRight className="h-4 w-4 -rotate-45" />
-        </span>
-      </div>
     </CardContent>
   </Card>
 );
 
-type DoctorCardProps = {
+type PostCardProps = {
   name: string;
   role: string;
-  camp: string;
-  time: string;
+  location: string;
+  availability: string;
 };
 
-const DoctorCard = ({ name, role, camp, time }: DoctorCardProps) => (
-  <Card className="rounded-[8px] border-0 bg-white shadow-brand-card">
+const PostCard = ({ name, role, location, availability }: PostCardProps) => (
+  <Card className="rounded-[8px] border border-brand-border bg-brand-light shadow-brand-card">
     <CardContent className="p-5 text-center">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-mint text-brand">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-surface text-brand">
         <UsersRound className="h-6 w-6" />
       </div>
       <h3 className="mt-4 font-semibold">{name}</h3>
       <p className="mt-1 text-xs text-brand-muted">{role}</p>
       <div className="mt-4 space-y-2 text-left text-xs leading-5 text-brand-ink">
-        <p>• {camp}</p>
-        <p>• Next slot: {time}</p>
-        <p>• Visit request available</p>
+        <p>• {location}</p>
+        <p>• {availability}</p>
+        <p>• Patient booking supported</p>
       </div>
       <div className="mt-5 flex justify-center gap-2">
         <Button size="sm" className="h-8 rounded-full bg-brand px-4 text-xs hover:bg-brand-dark">

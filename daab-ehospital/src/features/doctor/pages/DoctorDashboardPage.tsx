@@ -125,9 +125,6 @@ export const DoctorDashboardPage = () => {
   const selectedService = selectedAppointment?.service_id
     ? servicesById.get(selectedAppointment.service_id)
     : undefined;
-  const doctorClinic = doctor?.clinic_id
-    ? clinicsById.get(doctor.clinic_id)
-    : undefined;
   const isLoading =
     appointmentsList.query.isLoading ||
     patientsList.query.isLoading ||
@@ -138,33 +135,7 @@ export const DoctorDashboardPage = () => {
   }
 
   return (
-    <div className="min-h-full rounded-[12px] border border-brand-border bg-brand-paper p-3 shadow-brand-card md:p-4">
-      <section className="mb-3">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-brand-muted">
-              Doctor workspace
-            </p>
-            <h1 className="mt-1 text-2xl font-semibold leading-tight text-brand-ink">
-              Today's clinical work
-            </h1>
-            <p className="mt-1 text-sm text-brand-muted">
-              {doctorClinic
-                ? `${doctorClinic.name}, ${doctorClinic.camp}`
-                : "Review appointment requests, patient records, and follow-up work."}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline" className="h-9 rounded-[6px]">
-              <Link to="/doctor/appointments">View full queue</Link>
-            </Button>
-            <Button asChild className="h-9 rounded-[6px] bg-brand hover:bg-brand-dark">
-              <Link to="/doctor/appointments">Open next patient</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
+    <div className="min-h-full">
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0 space-y-3">
           <section className="grid overflow-hidden rounded-[8px] border border-brand-border bg-brand-surface shadow-brand-card md:grid-cols-4">
@@ -188,7 +159,6 @@ export const DoctorDashboardPage = () => {
           <section className="rounded-[8px] border border-brand-border bg-brand-surface p-4 shadow-brand-card">
             <SectionHeader
               title="Patient search"
-              description="Search patients already linked to your clinic queue."
             />
             <Input
               value={patientSearch}
@@ -244,7 +214,6 @@ export const DoctorDashboardPage = () => {
           <section className="rounded-[8px] border border-brand-border bg-brand-surface p-4 shadow-brand-card">
             <SectionHeader
               title="Current patient queue"
-              description="Pending requests and confirmed consultations in clinical order."
               action={
                 <Button asChild variant="outline" className="h-8 rounded-[6px]">
                   <Link to="/doctor/appointments">Manage queue</Link>
@@ -389,28 +358,15 @@ export const DoctorDashboardPage = () => {
               </div>
             </WorkPanel>
           </section>
-
-          <section className="grid overflow-hidden rounded-[8px] border border-brand-border bg-brand-surface shadow-brand-card lg:grid-cols-3">
-            <WorkPanel title="Pending lab results">
-              <EmptyState text="Lab result integration is not connected yet." />
-            </WorkPanel>
-            <WorkPanel title="Prescription requests">
-              <EmptyState text="Prescription requests will appear after the medication workflow is added." />
-            </WorkPanel>
-            <WorkPanel title="Notifications">
-              <EmptyState text="No clinical notifications at this time." />
-            </WorkPanel>
-          </section>
         </main>
 
-        <aside className="min-w-0 overflow-hidden rounded-[8px] border border-brand-border bg-brand-surface shadow-brand-card">
-          <section className="border-b border-brand-divider bg-brand-surface p-4">
+        <aside className="min-w-0 divide-y divide-brand-divider overflow-hidden rounded-[8px] border border-brand-border bg-brand-surface shadow-brand-card">
+          <section className="bg-brand-surface p-5">
             <SectionHeader
               title="Patient context"
-              description="Selected from the active queue."
             />
             {selectedPatient && selectedAppointment ? (
-              <div className="mt-4 space-y-4">
+              <div className="mt-5 space-y-5">
                 <div>
                   <p className="text-lg font-semibold text-brand-ink">
                     {selectedPatient.full_name}
@@ -445,15 +401,6 @@ export const DoctorDashboardPage = () => {
             )}
           </section>
 
-          <ContextBlock title="Vitals">
-            <EmptyState text="Vitals capture is not connected yet." compact />
-          </ContextBlock>
-          <ContextBlock title="Allergies">
-            <EmptyState text="No allergy records available." compact />
-          </ContextBlock>
-          <ContextBlock title="Current medications">
-            <EmptyState text="Medication records will appear after prescriptions are implemented." compact />
-          </ContextBlock>
           <ContextBlock title="Visit timeline">
             <div className="space-y-3">
               {appointments
@@ -575,9 +522,9 @@ const AppointmentLine = ({
 );
 
 const PatientFacts = ({ rows }: { rows: Array<[string, string]> }) => (
-  <dl className="divide-y divide-brand-divider border-y border-brand-divider">
+  <dl className="divide-y divide-brand-divider rounded-[8px] border border-brand-divider">
     {rows.map(([label, value]) => (
-      <div key={label} className="grid grid-cols-[110px_1fr] gap-3 py-2">
+      <div key={label} className="grid grid-cols-[104px_1fr] gap-3 px-3 py-2.5">
         <dt className="text-xs font-medium uppercase tracking-[0.06em] text-brand-muted">
           {label}
         </dt>
@@ -594,9 +541,9 @@ const ContextBlock = ({
   title: string;
   children: ReactNode;
 }) => (
-  <section className="border-b border-brand-divider p-4">
+  <section className="p-5">
     <h3 className="text-sm font-semibold text-brand-ink">{title}</h3>
-    <div className="mt-3">{children}</div>
+    <div className="mt-4">{children}</div>
   </section>
 );
 

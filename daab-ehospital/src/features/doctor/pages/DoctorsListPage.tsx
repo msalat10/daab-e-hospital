@@ -3,7 +3,6 @@ import { useList } from "@refinedev/core";
 import { Building2, Loader2, Phone, Stethoscope, UsersRound } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -51,30 +50,6 @@ export const DoctorsListPage = () => {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[8px] border border-brand-border bg-brand-surface px-5 py-4 shadow-brand-card">
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl space-y-2">
-            <Badge className="border-brand-border bg-brand-paper-soft text-brand-muted">
-              Doctor portal
-            </Badge>
-            <h1 className="text-2xl font-semibold tracking-normal text-brand-ink">
-              Doctors
-            </h1>
-            <p className="text-sm leading-6 text-brand-muted">
-              Live doctor profiles loaded from Supabase for clinic assignment
-              and appointment planning.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            className="h-9 w-fit rounded-[6px] border-brand-border bg-brand-surface text-brand-ink hover:bg-brand-light hover:text-brand-ink"
-            onClick={() => doctorsList.query.refetch()}
-          >
-            Refresh
-          </Button>
-        </div>
-      </section>
-
       <section className="grid gap-4 md:grid-cols-3">
         <StatCard
           icon={<UsersRound className="h-5 w-5" />}

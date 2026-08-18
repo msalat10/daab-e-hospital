@@ -1,8 +1,7 @@
 import { useState, type ComponentProps, type FormEvent } from "react"
-import { Link, useNavigate } from "react-router"
-import { useLogin } from "@refinedev/core"
+import { Link } from "react-router"
+import { useForgotPassword } from "@refinedev/core"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -13,28 +12,33 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
-export function LoginForm({
+export function ForgotPasswordForm({
   className,
   ...props
 }: ComponentProps<"div">) {
-  const navigate = useNavigate()
   const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [isSent, setIsSent] = useState(false)
 
-  const login = useLogin<{ email: string; password: string }>({
+  const forgotPassword = useForgotPassword<{ email: string }>({
     mutationOptions: {
       onSuccess: (response) => {
-        if (!response.success) {
-          setError(response.error?.message || "Unable to sign in")
+        const authResponse = response as {
+          success?: boolean
+          error?: { message?: string }
+        }
+
+        if (authResponse.success === false) {
+          setError(authResponse.error?.message || "Unable to send reset email")
           return
         }
 
-        navigate(response.redirectTo || "/app", { replace: true })
+        setIsSent(true)
       },
-      onError: (loginError) => {
-        setError(loginError.message || "Unable to sign in")
+      onError: (resetError) => {
+        setError(resetError.message || "Unable to send reset email")
       },
     },
   })
@@ -42,7 +46,8 @@ export function LoginForm({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)
-    login.mutate({ email, password })
+    setIsSent(false)
+    forgotPassword.mutate({ email })
   }
 
   return (
@@ -54,19 +59,28 @@ export function LoginForm({
               <div className="flex flex-col items-center gap-2 text-center">
                 <img
                   src="/assets/daab-logo-mark.svg"
-                  alt="daab"
+                  alt="Daryeel"
                   className="mb-2 h-20 w-28 object-contain"
                 />
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Reset your password</h1>
                 <p className="text-balance text-muted-foreground">
-                  Sign in to access the Dadaab E-Hospital system
+                  Enter your email and we will send you a password reset link.
                 </p>
               </div>
+
               {error && (
                 <FieldError className="rounded-md border border-destructive/20 bg-destructive/5 p-3">
                   {error}
                 </FieldError>
               )}
+
+              {isSent && (
+                <FieldDescription className="rounded-md border border-brand-success/20 bg-brand-success-soft p-3 text-brand-success">
+                  If an account exists for this email, a reset link has been
+                  sent.
+                </FieldDescription>
+              )}
+
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
@@ -78,41 +92,21 @@ export function LoginForm({
                   required
                 />
               </Field>
+
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Link
-                    to="/forgot-password"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                />
-              </Field>
-              <Field>
-                <Button type="submit" disabled={login.isPending}>
-                  {login.isPending ? "Signing in..." : "Login"}
+                <Button type="submit" disabled={forgotPassword.isPending}>
+                  {forgotPassword.isPending ? "Sending..." : "Send reset link"}
                 </Button>
               </Field>
+
               <FieldDescription className="text-center">
-                Don&apos;t have an account? <Link to="/signup">Sign up</Link>
+                Remembered your password? <Link to="/login">Sign in</Link>
               </FieldDescription>
             </FieldGroup>
           </form>
           <div className="hidden bg-primary-soft md:block" />
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription>
     </div>
   )
 }

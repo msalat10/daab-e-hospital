@@ -12,11 +12,16 @@ import { Layout } from "./components/refine-ui/layout/layout";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
-import { AdminPlaceholderPage } from "./features/admin/pages/AdminPlaceholderPage";
+import { AdminDoctorsPage } from "./features/admin/pages/AdminDoctorsPage";
+import { AdminFacilitiesPage } from "./features/admin/pages/AdminFacilitiesPage";
+import { AdminOverviewPage } from "./features/admin/pages/AdminOverviewPage";
+import { AdminPatientsPage } from "./features/admin/pages/AdminPatientsPage";
 import { RoleRedirect } from "./features/auth/components/RoleGate";
 import { useAuthRole } from "./features/auth/hooks/useAuthRole";
+import { ForgotPasswordPage } from "./features/auth/pages/ForgotPasswordPage";
 import { LoginPage } from "./features/auth/pages/LoginPage";
 import { SignupPage } from "./features/auth/pages/SignupPage";
+import { UpdatePasswordPage } from "./features/auth/pages/UpdatePasswordPage";
 import { DoctorAppointmentDetailsPage } from "./features/doctor/pages/DoctorAppointmentDetailsPage";
 import { DoctorAppointmentsPage } from "./features/doctor/pages/DoctorAppointmentsPage";
 import { DoctorDashboardPage } from "./features/doctor/pages/DoctorDashboardPage";
@@ -30,13 +35,13 @@ import { PatientCarePage } from "./features/patient/pages/PatientCarePage";
 import { PatientDashboardPage } from "./features/patient/pages/PatientDashboardPage";
 import { PatientNotificationsPage } from "./features/patient/pages/PatientNotificationsPage";
 import { PatientProfilePage } from "./features/patient/pages/PatientProfilePage";
-import { PatientReferenceLookupPage } from "./features/patient/pages/PatientReferenceLookupPage";
 import { ResourcePlaceholderPage } from "./features/shared/pages/ResourcePlaceholderPage";
 import "./App.css";
 import { AUTH_DISABLED } from "./config/auth";
 import { accessControlProvider } from "./providers/access-control";
 import { authProvider } from "./providers/auth";
 import { dataProvider, liveProvider } from "./providers/data";
+import { getDocumentTitle } from "./app/route-titles";
 
 function App() {
   const { role } = useAuthRole();
@@ -57,12 +62,24 @@ function App() {
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
                 projectId: "7yYQXp-Q8qzze-7XRW5k",
+                title: {
+                  text: "Daryeel",
+                  icon: (
+                    <img
+                      src="/assets/daab-logo-mark.svg"
+                      alt="Daryeel"
+                      className="h-6 w-6"
+                    />
+                  ),
+                },
               }}
             >
               <Routes>
                 <Route index element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/update-password" element={<UpdatePasswordPage />} />
                 <Route
                   element={
                     AUTH_DISABLED ? (
@@ -103,10 +120,6 @@ function App() {
                         element={<PatientAppointmentDetailsPage />}
                       />
                       <Route path="care" element={<PatientCarePage />} />
-                      <Route
-                        path="reference"
-                        element={<PatientReferenceLookupPage />}
-                      />
                       <Route
                         path="notifications"
                         element={<PatientNotificationsPage />}
@@ -151,8 +164,11 @@ function App() {
                         </CanAccess>
                       }
                     >
-                      <Route index element={<AdminPlaceholderPage />} />
-                      <Route path="dashboard" element={<AdminPlaceholderPage />} />
+                      <Route index element={<AdminOverviewPage />} />
+                      <Route path="dashboard" element={<AdminOverviewPage />} />
+                      <Route path="patients" element={<AdminPatientsPage />} />
+                      <Route path="doctors" element={<AdminDoctorsPage />} />
+                      <Route path="facilities" element={<AdminFacilitiesPage />} />
                     </Route>
                   </Route>
                   <Route
@@ -338,7 +354,9 @@ function App() {
               <Toaster />
               <RefineKbar />
               <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
+              <DocumentTitleHandler
+                handler={({ pathname }) => getDocumentTitle(pathname)}
+              />
             </Refine>
         </ThemeProvider>
       </RefineKbarProvider>

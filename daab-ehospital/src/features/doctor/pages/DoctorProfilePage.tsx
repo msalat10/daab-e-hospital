@@ -23,6 +23,21 @@ import {
 } from "@/components/ui/select";
 import type { Clinic, Doctor } from "@/features/shared/types/hospital";
 
+const healthPosts = [
+  {
+    label: "Hagadera Main Hospital",
+    camp: "Hagadera",
+  },
+  {
+    label: "Health Post E6",
+    camp: "Ifo",
+  },
+  {
+    label: "Health Post L6",
+    camp: "Dhagahley",
+  },
+] as const;
+
 export const DoctorProfilePage = () => {
   const {
     doctor,
@@ -59,6 +74,14 @@ export const DoctorProfilePage = () => {
     () => new Map(clinicsList.result.data.map((clinic) => [clinic.id, clinic])),
     [clinicsList.result.data]
   );
+  const clinicsByCamp = useMemo(
+    () => new Map(clinicsList.result.data.map((clinic) => [clinic.camp, clinic])),
+    [clinicsList.result.data]
+  );
+  const getPostName = (clinic?: Clinic) =>
+    healthPosts.find((post) => post.camp === clinic?.camp)?.label ||
+    clinic?.name ||
+    "Not assigned";
 
   const currentClinic = doctor?.clinic_id
     ? clinicsById.get(doctor.clinic_id)
@@ -161,20 +184,12 @@ export const DoctorProfilePage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] bg-white px-6 py-6 shadow-brand-card md:px-8">
-        <p className="text-sm font-medium text-brand-muted">Doctor portal</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-normal text-brand-ink">
-          Doctor profile
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-muted">
-          {AUTH_DISABLED
-            ? "Select the signed-in doctor profile for development, then review the clinic assignment used by the appointment queue."
-            : "Review the doctor record linked to your account and set the clinic assignment used by the appointment queue."}
-        </p>
-      </section>
-
-      <div className="grid gap-5 lg:grid-cols-[420px_1fr]">
-        {AUTH_DISABLED ? (
+      <div
+        className={
+          AUTH_DISABLED ? "grid gap-5 lg:grid-cols-[420px_1fr]" : "space-y-5"
+        }
+      >
+        {AUTH_DISABLED && (
           <Card className="h-fit rounded-[18px] border-0 bg-white shadow-brand-card">
             <CardHeader>
               <CardTitle className="text-xl text-brand-ink">
@@ -203,10 +218,10 @@ export const DoctorProfilePage = () => {
                   {selectedDoctor.specialty || selectedDoctor.title || "Doctor"}{" "}
                   {selectedDoctor.clinic_id
                     ? `at ${
-                        clinicsById.get(selectedDoctor.clinic_id)?.name ||
-                        "assigned clinic"
+                        getPostName(clinicsById.get(selectedDoctor.clinic_id)) ||
+                        "assigned post"
                       }`
-                    : "with no clinic assignment yet"}
+                    : "with no post assignment yet"}
                 </div>
               ) : null}
               <div className="flex gap-3">
@@ -239,24 +254,6 @@ export const DoctorProfilePage = () => {
               </div>
             </CardContent>
           </Card>
-        ) : (
-          <Card className="h-fit rounded-[18px] border-0 bg-white shadow-brand-card">
-            <CardHeader>
-              <CardTitle className="text-xl text-brand-ink">
-                Linked account
-              </CardTitle>
-              <p className="text-sm leading-6 text-brand-muted">
-                {doctor
-                  ? "This doctor record is connected to your login."
-                  : "Create your doctor record to unlock the dashboard and queue."}
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-[14px] bg-brand-paper-soft p-4 text-sm leading-6 text-brand-muted">
-                Signed in as {identity?.email || identity?.name || "doctor user"}
-              </div>
-            </CardContent>
-          </Card>
         )}
 
         <div className="space-y-5">
@@ -276,12 +273,8 @@ export const DoctorProfilePage = () => {
                   />
                   <ProfileStat
                     icon={<Building2 className="h-5 w-5" />}
-                    label="Clinic"
-                    value={
-                      currentClinic
-                        ? `${currentClinic.name}, ${currentClinic.camp}`
-                        : "Not assigned"
-                    }
+                    label="Post"
+                    value={currentClinic ? getPostName(currentClinic) : "Not assigned"}
                   />
                 </div>
               ) : (
@@ -355,7 +348,7 @@ export const DoctorProfilePage = () => {
                     />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="clinic">Clinic</Label>
+                    <Label htmlFor="clinic">Post</Label>
                     <Select
                       value={formValues.clinic_id || "none"}
                       onValueChange={(value) =>
@@ -366,15 +359,23 @@ export const DoctorProfilePage = () => {
                       }
                     >
                       <SelectTrigger id="clinic" className="h-11 rounded-full border-brand-border">
-                        <SelectValue placeholder="Choose clinic" />
+                        <SelectValue placeholder="Choose post" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">No clinic assignment</SelectItem>
-                        {clinicsList.result.data.map((clinic) => (
-                          <SelectItem key={clinic.id} value={clinic.id}>
-                            {clinic.name}, {clinic.camp}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value="none">No post assignment</SelectItem>
+                        {healthPosts.map((post) => {
+                          const clinic = clinicsByCamp.get(post.camp);
+
+                          if (!clinic) {
+                            return null;
+                          }
+
+                          return (
+                            <SelectItem key={post.label} value={clinic.id}>
+                              {post.label}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>

@@ -1,7 +1,6 @@
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { type HttpError, useList, useUpdate } from "@refinedev/core";
 import {
-  ArrowLeft,
   CalendarClock,
   ClipboardList,
   MapPin,
@@ -30,7 +29,6 @@ import {
   canPatientCancel,
   canPatientReschedule,
   formatDateTime,
-  getAppointmentStatusMessage,
 } from "@/features/shared/utils/appointments";
 
 export const PatientAppointmentDetailsPage = () => {
@@ -199,33 +197,6 @@ export const PatientAppointmentDetailsPage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] bg-white px-6 py-6 shadow-brand-card md:px-8">
-        <Button
-          asChild
-          variant="ghost"
-          className="-ml-3 mb-4 rounded-full text-brand-muted hover:text-brand-ink"
-        >
-          <Link to="/patient/appointments">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Link>
-        </Button>
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-medium text-brand-muted">
-              Reference {appointment.reference_code}
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-normal text-brand-ink">
-              Appointment details
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-muted">
-              {getAppointmentStatusMessage(appointment.status)}
-            </p>
-          </div>
-          <AppointmentStatusBadge status={appointment.status} />
-        </div>
-      </section>
-
       <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
         <Card className="rounded-[18px] border-0 bg-white shadow-brand-card">
           <CardHeader className="border-b border-brand-border/70">

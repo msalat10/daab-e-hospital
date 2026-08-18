@@ -15,7 +15,8 @@ import { useSidebar, SidebarTrigger } from "@/components/ui/sidebar";
 import { Bell, LogOutIcon, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { getRouteTitle } from "@/app/route-titles";
 
 export const Header = () => {
   const { isMobile } = useSidebar();
@@ -24,6 +25,8 @@ export const Header = () => {
 };
 
 function DesktopHeader() {
+  const pageTitle = usePageTitle();
+
   return (
     <header
       className={cn(
@@ -41,7 +44,7 @@ function DesktopHeader() {
     >
       <div>
         <h1 className="text-2xl font-semibold tracking-normal text-brand-ink">
-          Dashboard
+          {pageTitle}
         </h1>
       </div>
       <div className="flex items-center gap-2">
@@ -74,6 +77,7 @@ function MobileHeader() {
   const { open, isMobile } = useSidebar();
 
   const { title } = useRefineOptions();
+  const pageTitle = usePageTitle();
 
   return (
     <header
@@ -132,7 +136,7 @@ function MobileHeader() {
             }
           )}
         >
-          {title.text}
+          {pageTitle || title.text}
         </h2>
       </div>
 
@@ -180,6 +184,12 @@ const UserDropdown = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+};
+
+const usePageTitle = () => {
+  const { pathname } = useLocation();
+
+  return getRouteTitle(pathname);
 };
 
 Header.displayName = "Header";

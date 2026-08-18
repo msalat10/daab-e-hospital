@@ -10,11 +10,9 @@ import type {
   Service,
 } from "@/features/shared/types/hospital";
 import {
-  CareTasksSection,
   MedicalHistorySection,
   PatientContextPanel,
   PatientSummaryCards,
-  UpcomingAppointmentSection,
 } from "../components/dashboard/PatientDashboardCards";
 import { useCurrentPatient } from "../hooks/useCurrentPatient";
 
@@ -44,10 +42,6 @@ export const PatientDashboardPage = () => {
   });
 
   const appointments = appointmentsList.result.data;
-  const activeAppointments = appointments.filter((appointment) =>
-    ["pending", "confirmed"].includes(appointment.status)
-  );
-  const nextAppointment = activeAppointments[0];
 
   const clinicsById = useMemo(
     () => new Map(clinicsList.result.data.map((clinic) => [clinic.id, clinic])),
@@ -60,7 +54,7 @@ export const PatientDashboardPage = () => {
   );
 
   return (
-    <div className="min-h-full rounded-[12px] border border-brand-border bg-brand-paper p-3 shadow-brand-card md:p-4">
+    <div className="min-h-full">
       {!patientLoading && !patient && (
         <Card className="mb-4 rounded-[8px] border-brand-border bg-brand-surface shadow-none">
           <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
@@ -82,47 +76,13 @@ export const PatientDashboardPage = () => {
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_300px] 2xl:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0 space-y-3">
-          <section className="rounded-[8px] bg-transparent">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-brand-muted">
-                  Patient portal
-                </p>
-                <h1 className="mt-1 text-2xl font-semibold leading-tight text-brand-ink">
-                  My care workspace
-                </h1>
-                <p className="mt-1 text-sm text-brand-muted">
-                  Manage appointments, records, messages, and clinic follow-up
-                  from one place.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button asChild variant="outline" className="h-9 rounded-[6px]">
-                  <Link to="/patient/appointments">View medical records</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="h-9 rounded-[6px] bg-brand hover:bg-brand-dark"
-                >
-                  <Link to="/patient/book">Book appointment</Link>
-                </Button>
-              </div>
-            </div>
-          </section>
-
           <PatientSummaryCards appointments={appointments} />
 
-          <UpcomingAppointmentSection
-            appointment={nextAppointment}
-            clinicsById={clinicsById}
-            servicesById={servicesById}
-          />
           <MedicalHistorySection
             appointments={appointments}
             clinicsById={clinicsById}
             servicesById={servicesById}
           />
-          <CareTasksSection />
         </main>
 
         <div className="min-w-0 overflow-hidden rounded-[8px] border border-brand-border bg-brand-surface shadow-brand-card">

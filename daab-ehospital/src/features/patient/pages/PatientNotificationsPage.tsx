@@ -67,17 +67,6 @@ export const PatientNotificationsPage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] bg-white px-6 py-6 shadow-brand-card md:px-8">
-        <p className="text-sm font-medium text-brand-muted">Patient portal</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-normal text-brand-ink">
-          Appointment updates
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-muted">
-          A simple activity feed for appointment requests, confirmations, and
-          clinic decisions.
-        </p>
-      </section>
-
       <Card className="rounded-[18px] border-0 bg-white shadow-brand-card">
         <CardHeader className="border-b border-brand-border/70">
           <CardTitle className="flex items-center gap-2 text-xl text-brand-ink">

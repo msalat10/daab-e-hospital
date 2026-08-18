@@ -5,7 +5,6 @@ import {
   CalendarCheck,
   ClipboardList,
   LayoutDashboard,
-  Search,
   Stethoscope,
   UsersRound,
 } from "lucide-react";
@@ -39,15 +38,6 @@ export const patientResources: IResourceItem[] = [
     meta: {
       label: "Find Care",
       icon: <Stethoscope className="h-4 w-4" />,
-      allowedRoles: ["patient"],
-    },
-  },
-  {
-    name: "patient-reference",
-    list: "/patient/reference",
-    meta: {
-      label: "Reference Lookup",
-      icon: <Search className="h-4 w-4" />,
       allowedRoles: ["patient"],
     },
   },
@@ -107,48 +97,36 @@ export const adminResources: IResourceItem[] = [
     name: "admin-dashboard",
     list: "/admin/dashboard",
     meta: {
-      label: "Dashboard",
+      label: "Overview",
       icon: <LayoutDashboard className="h-4 w-4" />,
       allowedRoles: ["admin"],
     },
   },
   {
-    name: "clinics",
-    list: "/clinics",
-    create: "/clinics/create",
-    edit: "/clinics/edit/:id",
-    show: "/clinics/show/:id",
+    name: "patients",
+    list: "/admin/patients",
     meta: {
-      label: "Clinics",
-      icon: <Building2 className="h-4 w-4" />,
+      label: "Patients",
+      icon: <UsersRound className="h-4 w-4" />,
       allowedRoles: ["admin"],
-      canDelete: true,
-    },
-  },
-  {
-    name: "services",
-    list: "/services",
-    create: "/services/create",
-    edit: "/services/edit/:id",
-    show: "/services/show/:id",
-    meta: {
-      label: "Services",
-      icon: <ClipboardList className="h-4 w-4" />,
-      allowedRoles: ["admin"],
-      canDelete: true,
     },
   },
   {
     name: "doctors",
-    list: "/doctors",
-    create: "/doctors/create",
-    edit: "/doctors/edit/:id",
-    show: "/doctors/show/:id",
+    list: "/admin/doctors",
     meta: {
       label: "Doctors",
       icon: <Stethoscope className="h-4 w-4" />,
       allowedRoles: ["admin"],
-      canDelete: true,
+    },
+  },
+  {
+    name: "facilities",
+    list: "/admin/facilities",
+    meta: {
+      label: "Facilities",
+      icon: <Building2 className="h-4 w-4" />,
+      allowedRoles: ["admin"],
     },
   },
 ];

@@ -136,17 +136,6 @@ export const PatientProfilePage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] border-0 bg-white px-6 py-6 shadow-brand-card md:px-8">
-        <p className="text-sm font-medium text-brand-muted">Patient portal</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-normal text-brand-ink">
-          My profile
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-muted">
-          Keep your contact and camp details accurate so clinic staff can manage
-          your appointment requests.
-        </p>
-      </section>
-
       <Card className="rounded-[18px] border-0 bg-white shadow-brand-card">
         <CardHeader className="border-b border-brand-border/70">
           <CardTitle className="text-xl text-brand-ink">

@@ -32,22 +32,33 @@ import { Textarea } from "@/components/ui/textarea";
 import type {
   Appointment,
   Clinic,
-  Doctor,
-  Service,
 } from "@/features/shared/types/hospital";
 import { generateReferenceCode } from "@/features/shared/utils/appointments";
 import { useCurrentPatient } from "../hooks/useCurrentPatient";
 
 type AppointmentFormValues = {
   clinic_id: string;
-  service_id?: string;
-  doctor_id?: string;
   requested_date: string;
   requested_time?: string;
   reason?: string;
 };
 
 const today = new Date().toISOString().slice(0, 10);
+
+const healthPosts = [
+  {
+    label: "Hagadera Main Hospital",
+    camp: "Hagadera",
+  },
+  {
+    label: "Health Post E6",
+    camp: "Ifo",
+  },
+  {
+    label: "Health Post L6",
+    camp: "Dhagahley",
+  },
+] as const;
 
 export const PatientBookAppointmentPage = () => {
   const { patient, isLoading: patientLoading } = useCurrentPatient();
@@ -56,35 +67,17 @@ export const PatientBookAppointmentPage = () => {
   const form = useForm<AppointmentFormValues>({
     defaultValues: {
       clinic_id: "",
-      service_id: "",
-      doctor_id: "",
       requested_date: today,
       requested_time: "",
       reason: "",
     },
   });
 
-  const selectedClinicId = form.watch("clinic_id");
-
   const clinicsList = useList<Clinic>({
     resource: "clinics",
     pagination: { mode: "off" },
     filters: [{ field: "is_active", operator: "eq", value: true }],
     sorters: [{ field: "name", order: "asc" }],
-  });
-
-  const servicesList = useList<Service>({
-    resource: "services",
-    pagination: { mode: "off" },
-    filters: [{ field: "is_active", operator: "eq", value: true }],
-    sorters: [{ field: "name", order: "asc" }],
-  });
-
-  const doctorsList = useList<Doctor>({
-    resource: "doctors",
-    pagination: { mode: "off" },
-    filters: [{ field: "is_active", operator: "eq", value: true }],
-    sorters: [{ field: "full_name", order: "asc" }],
   });
 
   const createAppointment = useCreate<
@@ -94,32 +87,12 @@ export const PatientBookAppointmentPage = () => {
   >();
 
   const clinics = clinicsList.result.data;
-  const services = servicesList.result.data;
-  const doctors = doctorsList.result.data;
-
-  const filteredServices = useMemo(
-    () =>
-      selectedClinicId
-        ? services.filter(
-            (service) =>
-              !service.clinic_id || service.clinic_id === selectedClinicId
-          )
-        : services,
-    [selectedClinicId, services]
+  const clinicsByCamp = useMemo(
+    () => new Map(clinics.map((clinic) => [clinic.camp, clinic])),
+    [clinics]
   );
 
-  const filteredDoctors = useMemo(
-    () =>
-      selectedClinicId
-        ? doctors.filter((doctor) => doctor.clinic_id === selectedClinicId)
-        : doctors,
-    [selectedClinicId, doctors]
-  );
-
-  const lookupLoading =
-    clinicsList.query.isLoading ||
-    servicesList.query.isLoading ||
-    doctorsList.query.isLoading;
+  const lookupLoading = clinicsList.query.isLoading;
   const isSubmitting = createAppointment.mutation.isPending;
 
   const onSubmit = async (values: AppointmentFormValues) => {
@@ -135,8 +108,8 @@ export const PatientBookAppointmentPage = () => {
         reference_code: reference,
         patient_id: patient.id,
         clinic_id: values.clinic_id,
-        service_id: values.service_id || null,
-        doctor_id: values.doctor_id || null,
+        service_id: null,
+        doctor_id: null,
         requested_date: values.requested_date,
         requested_time: values.requested_time || null,
         reason: values.reason?.trim() || null,
@@ -152,8 +125,6 @@ export const PatientBookAppointmentPage = () => {
     setReferenceCode(reference);
     form.reset({
       clinic_id: "",
-      service_id: "",
-      doctor_id: "",
       requested_date: today,
       requested_time: "",
       reason: "",
@@ -162,25 +133,6 @@ export const PatientBookAppointmentPage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-5 rounded-[18px] border-0 bg-white px-6 py-6 shadow-brand-card md:px-8">
-        <p className="text-sm font-medium text-brand-muted">
-          Appointment request
-        </p>
-        <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-normal text-brand-ink">
-              Book an appointment
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-muted">
-              Choose a clinic service and send a visit request before arriving.
-            </p>
-          </div>
-          <Button asChild variant="outline" className="w-fit rounded-full">
-            <Link to="/patient/appointments">My appointments</Link>
-          </Button>
-        </div>
-      </section>
-
       {!patientLoading && !patient && (
         <Card className="rounded-[18px] border-0 bg-white shadow-brand-card">
           <CardContent className="p-6">
@@ -234,7 +186,7 @@ export const PatientBookAppointmentPage = () => {
             {lookupLoading && (
               <div className="mb-6 flex items-center gap-2 rounded-[8px] bg-brand-paper-soft px-4 py-3 text-sm text-brand-muted">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Loading clinic options...
+                Loading health post options...
               </div>
             )}
 
@@ -244,79 +196,30 @@ export const PatientBookAppointmentPage = () => {
                   <FormField
                     control={form.control}
                     name="clinic_id"
-                    rules={{ required: "Clinic is required" }}
+                    rules={{ required: "Health post is required" }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Clinic</FormLabel>
-                        <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            form.setValue("service_id", "");
-                            form.setValue("doctor_id", "");
-                          }}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Choose a clinic" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {clinics.map((clinic) => (
-                              <SelectItem key={clinic.id} value={clinic.id}>
-                                {clinic.name} · {clinic.camp}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="service_id"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Service</FormLabel>
+                        <FormLabel>Health Post</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Choose a service" />
+                              <SelectValue placeholder="Choose a health post" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {filteredServices.map((service) => (
-                              <SelectItem key={service.id} value={service.id}>
-                                {service.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                            {healthPosts.map((post) => {
+                              const clinic = clinicsByCamp.get(post.camp);
 
-                  <FormField
-                    control={form.control}
-                    name="doctor_id"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred doctor</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Optional" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {filteredDoctors.map((doctor) => (
-                              <SelectItem key={doctor.id} value={doctor.id}>
-                                {doctor.full_name}
-                              </SelectItem>
-                            ))}
+                              if (!clinic) {
+                                return null;
+                              }
+
+                              return (
+                                <SelectItem key={post.label} value={clinic.id}>
+                                  {post.label}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                         <FormMessage />

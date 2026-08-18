@@ -302,24 +302,6 @@ export const DoctorAppointmentsPage = () => {
 
   return (
     <div className="min-h-full rounded-[16px] bg-brand-paper-soft p-3 md:p-5">
-      <section className="mb-4 rounded-[8px] border border-brand-border bg-brand-surface px-5 py-4 shadow-brand-card">
-        <p className="text-sm font-medium text-brand-muted">Doctor portal</p>
-        <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-normal text-brand-ink">
-              Appointment queue
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-muted">
-              Review pending clinic requests and manage visits assigned to your
-              doctor profile.
-            </p>
-          </div>
-          <Button asChild variant="outline" className="w-fit rounded-full">
-            <Link to="/doctor/dashboard">Dashboard</Link>
-          </Button>
-        </div>
-      </section>
-
       <TableInstanceShell
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}

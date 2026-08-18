@@ -36,9 +36,10 @@ export function Layout({ children }: PropsWithChildren) {
                 "bg-brand-paper",
                 "px-4",
                 "pb-4",
-                "pt-2",
+                "pt-5",
                 "md:px-5",
-                "md:pb-5"
+                "md:pb-5",
+                "md:pt-6"
               )}
             >
               {children}

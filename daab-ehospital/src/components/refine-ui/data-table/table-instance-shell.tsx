@@ -32,7 +32,7 @@ type TableInstanceShellProps = {
 };
 
 export const TableInstanceShell = ({
-  title = "table instance",
+  title,
   searchPlaceholder = "Search records",
   searchValue,
   onSearchChange,
@@ -52,12 +52,18 @@ export const TableInstanceShell = ({
       className
     )}
   >
-    <div className="mb-4 flex items-center justify-between border-b border-brand-divider pb-3">
-      <p className="text-sm font-semibold text-brand-ink">{title}</p>
-      {rowInfo ? (
-        <p className="text-xs font-medium text-brand-muted">{rowInfo}</p>
-      ) : null}
-    </div>
+    {(title || rowInfo) && (
+      <div className="mb-4 flex items-center justify-between border-b border-brand-divider pb-3">
+        {title ? (
+          <p className="text-sm font-semibold text-brand-ink">{title}</p>
+        ) : (
+          <div />
+        )}
+        {rowInfo ? (
+          <p className="text-xs font-medium text-brand-muted">{rowInfo}</p>
+        ) : null}
+      </div>
+    )}
 
     <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
       {typeof searchValue === "string" && onSearchChange ? (
