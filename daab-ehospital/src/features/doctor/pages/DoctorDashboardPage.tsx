@@ -30,11 +30,24 @@ import {
 export const DoctorDashboardPage = () => {
   const { doctor, isLoading: doctorLoading } = useCurrentDoctor();
   const [patientSearch, setPatientSearch] = useState("");
+  const doctorAppointmentFilters = useMemo(
+    () =>
+      doctor?.clinic_id
+        ? [{ field: "clinic_id", operator: "eq" as const, value: doctor.clinic_id }]
+        : doctor?.id
+        ? [{ field: "doctor_id", operator: "eq" as const, value: doctor.id }]
+        : [{ field: "id", operator: "eq" as const, value: "__no_doctor__" }],
+    [doctor?.clinic_id, doctor?.id]
+  );
 
   const appointmentsList = useList<Appointment>({
     resource: "appointments",
     pagination: { mode: "off" },
+    filters: doctorAppointmentFilters,
     sorters: [{ field: "requested_date", order: "asc" }],
+    queryOptions: {
+      enabled: Boolean(doctor?.clinic_id || doctor?.id),
+    },
   });
   const patientsList = useList<Patient>({
     resource: "patients",

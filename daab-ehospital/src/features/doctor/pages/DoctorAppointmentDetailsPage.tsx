@@ -43,6 +43,15 @@ export const DoctorAppointmentDetailsPage = () => {
   const { doctor, isLoading: doctorLoading } = useCurrentDoctor();
   const [doctorNotes, setDoctorNotes] = useState("");
   const [assignedDoctorId, setAssignedDoctorId] = useState("");
+  const doctorAppointmentFilters = useMemo(
+    () =>
+      doctor?.clinic_id
+        ? [{ field: "clinic_id", operator: "eq" as const, value: doctor.clinic_id }]
+        : doctor?.id
+        ? [{ field: "doctor_id", operator: "eq" as const, value: doctor.id }]
+        : [{ field: "id", operator: "eq" as const, value: "__no_doctor__" }],
+    [doctor?.clinic_id, doctor?.id]
+  );
 
   const appointmentList = useList<Appointment>({
     resource: "appointments",
@@ -53,7 +62,11 @@ export const DoctorAppointmentDetailsPage = () => {
   const allAppointmentsList = useList<Appointment>({
     resource: "appointments",
     pagination: { mode: "off" },
+    filters: doctorAppointmentFilters,
     sorters: [{ field: "requested_date", order: "desc" }],
+    queryOptions: {
+      enabled: Boolean(doctor?.clinic_id || doctor?.id),
+    },
   });
   const patientsList = useList<Patient>({
     resource: "patients",

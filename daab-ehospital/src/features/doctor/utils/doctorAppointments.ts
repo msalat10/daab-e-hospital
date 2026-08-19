@@ -22,12 +22,10 @@ export const isAppointmentInDoctorScope = (
   }
 
   const assignedToDoctor = appointment.doctor_id === doctor.id;
-  const openClinicRequest =
-    appointment.status === "pending" &&
-    Boolean(doctor.clinic_id) &&
-    appointment.clinic_id === doctor.clinic_id;
+  const assignedToDoctorPost =
+    Boolean(doctor.clinic_id) && appointment.clinic_id === doctor.clinic_id;
 
-  return assignedToDoctor || openClinicRequest;
+  return assignedToDoctorPost || assignedToDoctor;
 };
 
 export const isTodayAppointment = (appointment: Appointment) =>

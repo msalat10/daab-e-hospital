@@ -20,7 +20,66 @@ to authenticated
 using (user_id = auth.uid())
 with check (user_id = auth.uid());
 
+drop policy if exists "Doctors read post appointments" on public.appointments;
+create policy "Doctors read post appointments"
+on public.appointments for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.doctors
+    where doctors.user_id = auth.uid()
+      and (
+        appointments.clinic_id = doctors.clinic_id
+        or appointments.doctor_id = doctors.id
+      )
+  )
+);
+
+drop policy if exists "Doctors update post appointments" on public.appointments;
+create policy "Doctors update post appointments"
+on public.appointments for update
+to authenticated
+using (
+  exists (
+    select 1
+    from public.doctors
+    where doctors.user_id = auth.uid()
+      and (
+        appointments.clinic_id = doctors.clinic_id
+        or appointments.doctor_id = doctors.id
+      )
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.doctors
+    where doctors.user_id = auth.uid()
+      and (
+        appointments.clinic_id = doctors.clinic_id
+        or appointments.doctor_id = doctors.id
+      )
+  )
+);
+
+drop policy if exists "Doctors read post patients" on public.patients;
+create policy "Doctors read post patients"
+on public.patients for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.appointments
+    join public.doctors on doctors.user_id = auth.uid()
+    where appointments.patient_id = patients.id
+      and (
+        appointments.clinic_id = doctors.clinic_id
+        or appointments.doctor_id = doctors.id
+      )
+  )
+);
+
 -- Target production shape:
 --   doctors.user_id = auth.uid()
---   doctors review appointments assigned to them or pending in their clinic.
--- Keep the current MVP appointment policies until the admin role is implemented.
+--   doctors review appointments for their assigned post.
